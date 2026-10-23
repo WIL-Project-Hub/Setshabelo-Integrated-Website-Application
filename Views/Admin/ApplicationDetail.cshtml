@@ -1,0 +1,695 @@
+@model SetshabeloAdmissionSystem.ViewModels.ApplicationDetailViewModel
+
+@{
+    ViewData["Title"] = "Application Detail";
+
+    var app = Model.Application;
+
+    var badgeClass = (app.ApplicationStatus ?? "").Replace(" ", "") switch
+    {
+        "Pending" => "badge-status-Pending",
+        "UnderReview" => "badge-status-UnderReview",
+        "Accepted" => "badge-status-Accepted",
+        "Rejected" => "badge-status-Rejected",
+        _ => "bg-secondary"
+    };
+}
+
+<style>
+    .application-detail-page {
+        min-height: calc(100vh - 160px);
+        padding: 24px 0 36px;
+        color: #212121;
+    }
+
+    .detail-heading {
+        color: #1b4d3e;
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 8px;
+        overflow-wrap: anywhere;
+    }
+
+    .detail-subtitle {
+        color: #6c757d;
+        margin-bottom: 0;
+    }
+
+    .detail-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 9px 16px;
+        border-radius: 8px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+    }
+
+    .detail-btn-primary {
+        color: #fff;
+        background: #1b4d3e;
+        border: 1px solid #1b4d3e;
+    }
+
+        .detail-btn-primary:hover {
+            color: #fff;
+            background: #143b2f;
+            border-color: #143b2f;
+            transform: translateY(-1px);
+        }
+
+    .detail-btn-outline {
+        color: #1b4d3e;
+        background: #fff;
+        border: 1px solid #1b4d3e;
+    }
+
+        .detail-btn-outline:hover {
+            color: #fff;
+            background: #1b4d3e;
+        }
+
+    .detail-btn:focus-visible {
+        outline: 3px solid #b5d8bf;
+        outline-offset: 3px;
+    }
+
+    /* Status overview */
+    .detail-status-card,
+    .detail-info-card,
+    .detail-list-card {
+        background: #fff;
+        border: 1px solid #e0e9e2;
+        border-radius: 13px;
+        box-shadow: 0 4px 14px rgba(27, 77, 62, 0.07);
+        overflow: hidden;
+    }
+
+    .detail-card-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 16px 20px;
+        background: #1b4d3e;
+        color: #fff;
+    }
+
+        .detail-card-header h5,
+        .detail-card-header h6 {
+            margin: 0;
+            font-weight: 650;
+        }
+
+    .detail-card-body {
+        padding: 22px;
+    }
+
+    .detail-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px 32px;
+        margin-bottom: 20px;
+    }
+
+    .detail-meta-item {
+        color: #53645b;
+        font-size: 0.92rem;
+    }
+
+        .detail-meta-item strong {
+            display: block;
+            margin-bottom: 4px;
+            color: #1b4d3e;
+        }
+
+    .detail-status-form {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 10px;
+        padding-top: 18px;
+        border-top: 1px solid #e7eee9;
+    }
+
+        .detail-status-form .form-select {
+            width: auto;
+            min-width: 180px;
+            min-height: 42px;
+            border-color: #cedbd1;
+            border-radius: 8px;
+        }
+
+            .detail-status-form .form-select:focus {
+                border-color: #2d8a42;
+                box-shadow: 0 0 0 3px rgba(45, 138, 66, 0.12);
+            }
+
+    /* Status badges */
+    .detail-status-badge {
+        display: inline-block;
+        padding: 7px 12px;
+        border-radius: 20px;
+        font-size: 0.82rem;
+        font-weight: 650;
+        white-space: nowrap;
+    }
+
+    .badge-status-Pending {
+        background: #fff0bd;
+        color: #765900;
+    }
+
+    .badge-status-UnderReview {
+        background: #d9f0f3;
+        color: #176773;
+    }
+
+    .badge-status-Accepted {
+        background: #dcefe0;
+        color: #216b32;
+    }
+
+    .badge-status-Rejected {
+        background: #f8dddd;
+        color: #a52834;
+    }
+
+    /* Information cards */
+    .detail-info-card {
+        height: 100%;
+    }
+
+        .detail-info-card .detail-card-body {
+            padding: 10px 22px;
+        }
+
+    .detail-info-row {
+        display: grid;
+        grid-template-columns: minmax(130px, 42%) minmax(0, 1fr);
+        gap: 12px;
+        padding: 13px 0;
+        border-bottom: 1px solid #edf1ee;
+        font-size: 0.92rem;
+    }
+
+        .detail-info-row:last-child {
+            border-bottom: none;
+        }
+
+    .detail-info-label {
+        color: #53645b;
+        font-weight: 600;
+    }
+
+    .detail-info-value {
+        color: #212121;
+        overflow-wrap: anywhere;
+        white-space: pre-wrap;
+    }
+
+    .detail-section {
+        margin-top: 26px;
+    }
+
+    /* Documents */
+    .detail-list {
+        margin: 0;
+    }
+
+        .detail-list .list-group-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            padding: 15px 20px;
+            border-color: #edf1ee;
+        }
+
+    .detail-document-name {
+        color: #37423b;
+        font-weight: 550;
+        overflow-wrap: anywhere;
+    }
+
+    .detail-empty {
+        padding: 22px 20px;
+        color: #6c757d;
+        margin: 0;
+    }
+
+    /* Comments */
+    .detail-comment {
+        padding: 16px 20px;
+        border-bottom: 1px solid #edf1ee;
+    }
+
+        .detail-comment:last-child {
+            border-bottom: none;
+        }
+
+    .detail-comment-date {
+        margin-bottom: 7px;
+        color: #6c757d;
+        font-size: 0.82rem;
+    }
+
+    .detail-comment-text {
+        margin: 0;
+        color: #37423b;
+        overflow-wrap: anywhere;
+        white-space: pre-wrap;
+    }
+
+    .detail-comment-form {
+        padding: 20px;
+        background: #f5f9f6;
+        border-top: 1px solid #e0e9e2;
+    }
+
+        .detail-comment-form .form-control {
+            min-height: 44px;
+            border-color: #cedbd1;
+            border-radius: 8px 0 0 8px;
+        }
+
+            .detail-comment-form .form-control:focus {
+                border-color: #2d8a42;
+                box-shadow: 0 0 0 3px rgba(45, 138, 66, 0.12);
+            }
+
+        .detail-comment-form .btn {
+            border-radius: 0 8px 8px 0;
+        }
+
+    @@media (max-width: 767.98px) {
+        .application-detail-page {
+            padding: 18px 0 28px;
+        }
+
+        .detail-heading {
+            font-size: 1.6rem;
+        }
+
+        .detail-card-body {
+            padding: 18px;
+        }
+
+        .detail-card-header {
+            padding: 15px 18px;
+        }
+
+        .detail-info-card .detail-card-body {
+            padding: 8px 18px;
+        }
+
+        .detail-info-row {
+            grid-template-columns: minmax(105px, 40%) minmax(0, 1fr);
+            gap: 8px;
+            font-size: 0.87rem;
+        }
+
+        .detail-status-form {
+            align-items: stretch;
+            flex-direction: column;
+        }
+
+            .detail-status-form .form-select,
+            .detail-status-form button {
+                width: 100%;
+            }
+
+        .detail-list .list-group-item {
+            padding: 14px 16px;
+        }
+    }
+
+    @@media (max-width: 400px) {
+        .detail-info-row {
+            grid-template-columns: 1fr;
+            gap: 4px;
+        }
+    }
+</style>
+
+<div class="application-detail-page">
+
+    <!-- Page heading -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+        <div>
+            <h2 class="detail-heading">Application Details</h2>
+            <p class="detail-subtitle">
+                Reviewing the application for @app.ChildFullName
+            </p>
+        </div>
+
+        <a asp-action="ApplicationList"
+           class="detail-btn detail-btn-outline">
+            &larr; Back to Applications
+        </a>
+    </div>
+
+    <!-- Application status -->
+    <section class="detail-status-card mb-4">
+        <div class="detail-card-header">
+            <h5>Application Status</h5>
+
+            <span class="detail-status-badge @badgeClass">
+                @app.ApplicationStatus
+            </span>
+        </div>
+
+        <div class="detail-card-body">
+            <div class="detail-meta">
+                <div class="detail-meta-item">
+                    <strong>Submitted</strong>
+                    @app.SubmissionDate.ToString("f")
+                </div>
+
+                @if (app.ReviewedDate.HasValue)
+                {
+                    <div class="detail-meta-item">
+                        <strong>Reviewed</strong>
+                        @app.ReviewedDate.Value.ToString("f")
+                    </div>
+                }
+            </div>
+
+            <form asp-action="UpdateStatus"
+                  method="post"
+                  class="detail-status-form">
+
+                <input type="hidden"
+                       name="id"
+                       value="@app.ApplicationId" />
+
+                <select name="status"
+                        class="form-select"
+                        aria-label="Select application status">
+
+                    <option value="Pending"
+                            selected="@(app.ApplicationStatus == "Pending")">
+                        Pending
+                    </option>
+
+                    <option value="Under Review"
+                            selected="@(app.ApplicationStatus == "Under Review")">
+                        Under Review
+                    </option>
+
+                    <option value="Accepted"
+                            selected="@(app.ApplicationStatus == "Accepted")">
+                        Accepted
+                    </option>
+
+                    <option value="Rejected"
+                            selected="@(app.ApplicationStatus == "Rejected")">
+                        Rejected
+                    </option>
+                </select>
+
+                <button type="submit"
+                        class="detail-btn detail-btn-primary">
+                    Update Status
+                </button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Child and parent information -->
+    <div class="row g-4">
+
+        <div class="col-12 col-lg-6">
+            <section class="detail-info-card">
+                <div class="detail-card-header">
+                    <h5>Child Information</h5>
+                </div>
+
+                <div class="detail-card-body">
+                    <div class="detail-info-row">
+                        <span class="detail-info-label">Name</span>
+                        <span class="detail-info-value">@app.ChildFullName</span>
+                    </div>
+
+                    <div class="detail-info-row">
+                        <span class="detail-info-label">Date of Birth</span>
+                        <span class="detail-info-value">
+                            @(app.ChildDateOfBirth?.ToString("yyyy-MM-dd") ?? "—")
+                        </span>
+                    </div>
+
+                    <div class="detail-info-row">
+                        <span class="detail-info-label">Grade Applying For</span>
+                        <span class="detail-info-value">@app.GradeApplyingFor</span>
+                    </div>
+
+                    <div class="detail-info-row">
+                        <span class="detail-info-label">Gender</span>
+                        <span class="detail-info-value">@app.ChildGender</span>
+                    </div>
+
+                    <div class="detail-info-row">
+                        <span class="detail-info-label">Race</span>
+                        <span class="detail-info-value">@app.ChildRace</span>
+                    </div>
+
+                    <div class="detail-info-row">
+                        <span class="detail-info-label">ID / Birth Certificate</span>
+                        <span class="detail-info-value">@app.ChildIdNumber</span>
+                    </div>
+
+                    <div class="detail-info-row">
+                        <span class="detail-info-label">Home Language</span>
+                        <span class="detail-info-value">@app.ChildHomeLanguage</span>
+                    </div>
+
+                    <div class="detail-info-row">
+                        <span class="detail-info-label">Pre-Primary Education</span>
+                        <span class="detail-info-value">@app.PrePrimaryEducation</span>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <div class="col-12 col-lg-6">
+            <section class="detail-info-card">
+                <div class="detail-card-header">
+                    <h5>Parent Information</h5>
+                </div>
+
+                <div class="detail-card-body">
+                    <div class="detail-info-row">
+                        <span class="detail-info-label">Name</span>
+                        <span class="detail-info-value">
+                            @app.ParentTitle @app.ParentInitials
+                            @app.ParentFirstName @app.ParentLastName
+                        </span>
+                    </div>
+
+                    <div class="detail-info-row">
+                        <span class="detail-info-label">Relationship</span>
+                        <span class="detail-info-value">@app.ParentRelationship</span>
+                    </div>
+
+                    <div class="detail-info-row">
+                        <span class="detail-info-label">ID Number</span>
+                        <span class="detail-info-value">@app.ParentIdNumber</span>
+                    </div>
+
+                    <div class="detail-info-row">
+                        <span class="detail-info-label">Race</span>
+                        <span class="detail-info-value">@app.ParentRace</span>
+                    </div>
+
+                    <div class="detail-info-row">
+                        <span class="detail-info-label">Home Language</span>
+                        <span class="detail-info-value">@app.ParentHomeLanguage</span>
+                    </div>
+
+                    <div class="detail-info-row">
+                        <span class="detail-info-label">Occupation</span>
+                        <span class="detail-info-value">@app.ParentOccupation</span>
+                    </div>
+
+                    <div class="detail-info-row">
+                        <span class="detail-info-label">Employer</span>
+                        <span class="detail-info-value">@app.ParentEmployer</span>
+                    </div>
+
+                    <div class="detail-info-row">
+                        <span class="detail-info-label">Phone</span>
+                        <span class="detail-info-value">@app.ParentPhone</span>
+                    </div>
+
+                    <div class="detail-info-row">
+                        <span class="detail-info-label">Email</span>
+                        <span class="detail-info-value">@app.ParentEmail</span>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Address and contact -->
+        <div class="col-12 col-lg-6">
+            <section class="detail-info-card">
+                <div class="detail-card-header">
+                    <h5>Address &amp; Contact</h5>
+                </div>
+
+                <div class="detail-card-body">
+                    <div class="detail-info-row">
+                        <span class="detail-info-label">Physical Address</span>
+                        <span class="detail-info-value">@app.PhysicalAddress</span>
+                    </div>
+
+                    <div class="detail-info-row">
+                        <span class="detail-info-label">City / Suburb</span>
+                        <span class="detail-info-value">@app.CityOrSuburb</span>
+                    </div>
+
+                    <div class="detail-info-row">
+                        <span class="detail-info-label">Postal Code</span>
+                        <span class="detail-info-value">@app.PostalCode</span>
+                    </div>
+
+                    <div class="detail-info-row">
+                        <span class="detail-info-label">Emergency Phone</span>
+                        <span class="detail-info-value">@app.EmergencyPhone</span>
+                    </div>
+
+                    <div class="detail-info-row">
+                        <span class="detail-info-label">Mode of Transport</span>
+                        <span class="detail-info-value">@app.ModeOfTransport</span>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Medical information -->
+        <div class="col-12 col-lg-6">
+            <section class="detail-info-card">
+                <div class="detail-card-header">
+                    <h5>Medical Information</h5>
+                </div>
+
+                <div class="detail-card-body">
+                    <div class="detail-info-row">
+                        <span class="detail-info-label">Medical Aid</span>
+                        <span class="detail-info-value">@app.MedicalAid</span>
+                    </div>
+
+                    <div class="detail-info-row">
+                        <span class="detail-info-label">Medical Aid Number</span>
+                        <span class="detail-info-value">@app.MedicalAidNumber</span>
+                    </div>
+
+                    <div class="detail-info-row">
+                        <span class="detail-info-label">Doctor</span>
+                        <span class="detail-info-value">@app.DoctorName</span>
+                    </div>
+
+                    <div class="detail-info-row">
+                        <span class="detail-info-label">Doctor Phone</span>
+                        <span class="detail-info-value">@app.DoctorPhone</span>
+                    </div>
+
+                    <div class="detail-info-row">
+                        <span class="detail-info-label">Medical Condition</span>
+                        <span class="detail-info-value">@app.MedicalCondition</span>
+                    </div>
+
+                    <div class="detail-info-row">
+                        <span class="detail-info-label">Special Problems</span>
+                        <span class="detail-info-value">@app.SpecialProblems</span>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+    </div>
+
+    <!-- Uploaded documents -->
+    <section class="detail-list-card detail-section">
+        <div class="detail-card-header">
+            <h5>Uploaded Documents</h5>
+        </div>
+
+        <ul class="list-group list-group-flush detail-list">
+            @if (Model.Documents != null && Model.Documents.Any())
+            {
+                foreach (var d in Model.Documents)
+                {
+                    <li class="list-group-item">
+                        <span class="detail-document-name">
+                            @d.DocumentType
+                        </span>
+
+                        <a href="@d.FileUrl"
+                           target="_blank"
+                           rel="noopener noreferrer"
+                           class="detail-btn detail-btn-outline">
+                            Open Document
+                        </a>
+                    </li>
+                }
+            }
+            else
+            {
+                <li class="detail-empty">
+                    No documents uploaded.
+                </li>
+            }
+        </ul>
+    </section>
+
+    <!-- Comments -->
+    <section class="detail-list-card detail-section">
+        <div class="detail-card-header">
+            <h5>Comments</h5>
+        </div>
+
+        <div>
+            @if (Model.Comments != null && Model.Comments.Any())
+            {
+                foreach (var c in Model.Comments)
+                {
+                    <div class="detail-comment">
+                        <div class="detail-comment-date">
+                            @c.CreatedAt.ToString("f")
+                        </div>
+
+                        <p class="detail-comment-text">@c.CommentText</p>
+                    </div>
+                }
+            }
+            else
+            {
+                <p class="detail-empty">No comments yet.</p>
+            }
+        </div>
+
+        <div class="detail-comment-form">
+            <form asp-action="AddComment" method="post">
+                <input type="hidden"
+                       name="id"
+                       value="@app.ApplicationId" />
+
+                <div class="input-group">
+                    <input type="text"
+                           name="newComment"
+                           class="form-control"
+                           placeholder="Add a comment..."
+                           aria-label="Add a comment"
+                           required />
+
+                    <button type="submit"
+                            class="btn btn-success">
+                        Add Comment
+                    </button>
+                </div>
+            </form>
+        </div>
+    </section>
+
+</div>
