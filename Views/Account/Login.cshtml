@@ -1,0 +1,419 @@
+@model SetshabeloAdmissionSystem.ViewModels.LoginViewModel
+
+@{
+    ViewData["Title"] = "Login";
+}
+
+<style>
+    /* Full-screen page */
+    .login-page,
+    .login-page * {
+        box-sizing: border-box;
+    }
+
+    .login-page {
+        display: flex;
+        width: 100%;
+        height: 100%;
+        min-height: 0;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        font-family: Arial, sans-serif;
+        background: #f5f6f6;
+    }
+
+    /* Left green panel */
+    .login-left {
+        width: 40%;
+        height: 100%;
+        flex-shrink: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 30px;
+        overflow: hidden;
+        text-align: center;
+        color: white;
+        background: #2d8b3e;
+    }
+
+    /* Circular school logo */
+    .school-logo {
+        width: 280px;
+        height: 280px;
+        max-width: 80%;
+        flex-shrink: 1;
+        border-radius: 50%;
+        background: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        margin-bottom: 55px;
+    }
+
+        .school-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+    .login-left h2 {
+        font-size: 29px;
+        font-weight: 600;
+        margin: 0 0 4px;
+    }
+
+    .login-description {
+        font-size: 20px;
+        line-height: 1.25;
+        margin: 0 0 42px;
+    }
+
+    .login-benefits {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        text-align: left;
+        font-size: 20px;
+        line-height: 1.35;
+    }
+
+        .login-benefits li::before {
+            content: "✓";
+            margin-right: 14px;
+        }
+
+    /* Right panel */
+    .login-right {
+        flex: 1;
+        min-width: 0;
+        min-height: 0;
+        height: 100%;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 30px;
+        overflow: hidden;
+        background: #f5f6f6;
+    }
+
+    /* Faded school logo watermark */
+    .login-watermark {
+        position: absolute;
+        width: min(85%, 720px);
+        max-height: 90%;
+        object-fit: contain;
+        opacity: 0.07;
+        pointer-events: none;
+    }
+
+    /* Login card */
+    .login-card {
+        width: 100%;
+        max-width: 400px;
+        max-height: 100%;
+        position: relative;
+        z-index: 1;
+        padding: 28px 40px;
+        overflow-y: auto;
+        border: 1px solid #e7e7e7;
+        border-radius: 17px;
+        background: rgba(255, 255, 255, 0.84);
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.12);
+    }
+
+        .login-card h3 {
+            font-size: 24px;
+            font-weight: 750;
+            text-align: center;
+            margin: 0 0 28px;
+            color: #080808;
+        }
+
+        .login-card .form-label {
+            display: block;
+            text-align: center;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .login-card .form-control {
+            height: 45px;
+            border: none;
+            border-radius: 8px;
+            background: #d9d9d9;
+            box-shadow: none;
+        }
+
+            .login-card .form-control:focus {
+                background: #eeeeee;
+                outline: 2px solid #2d8b3e;
+            }
+
+        .login-card .btn-success {
+            height: 48px;
+            margin-top: 7px;
+            border-radius: 8px;
+            border-color: #2d8b3e;
+            background: #2d8b3e;
+            font-weight: 600;
+        }
+
+            .login-card .btn-success:hover {
+                background: #247433;
+                border-color: #247433;
+            }
+
+        .login-card .register-text {
+            text-align: center;
+            font-size: 13px;
+            margin: 20px 0 0;
+            color: #111;
+        }
+
+            .login-card .register-text a {
+                color: #111;
+                text-decoration: none;
+                margin-left: 4px;
+            }
+
+                .login-card .register-text a:hover {
+                    color: #2d8b3e;
+                    text-decoration: underline;
+                }
+
+    /* Smaller desktop screens and tablets */
+    @@media (max-width: 900px) {
+        .login-left {
+            width: 38%;
+            padding: 20px 15px;
+        }
+
+        .school-logo {
+            width: 190px;
+            height: 190px;
+            margin-bottom: 30px;
+        }
+
+        .login-left h2 {
+            font-size: 23px;
+        }
+
+        .login-description,
+        .login-benefits {
+            font-size: 16px;
+        }
+
+        .login-description {
+            margin-bottom: 25px;
+        }
+
+        .login-right {
+            padding: 20px;
+        }
+
+        .login-card {
+            padding: 25px;
+        }
+    }
+
+    /* Mobile layout */
+    @@media (max-width: 650px) {
+        .login-page {
+            flex-direction: column;
+        }
+
+        .login-left {
+            width: 100%;
+            height: 43%;
+            flex: 0 0 43%;
+            padding: 8px 16px;
+        }
+
+        .school-logo {
+            width: 85px;
+            height: 85px;
+            margin-bottom: 8px;
+        }
+
+        .login-left h2 {
+            font-size: 19px;
+        }
+
+        .login-description {
+            font-size: 13px;
+            line-height: 1.2;
+            margin-bottom: 8px;
+        }
+
+        .login-benefits {
+            font-size: 12px;
+            line-height: 1.25;
+        }
+
+            .login-benefits li::before {
+                margin-right: 6px;
+            }
+
+        .login-right {
+            flex: 1 1 0;
+            width: 100%;
+            min-height: 0;
+            padding: 10px 16px;
+        }
+
+        .login-card {
+            max-width: 400px;
+            padding: 18px 24px;
+        }
+
+            .login-card h3 {
+                font-size: 21px;
+                margin-bottom: 16px;
+            }
+
+            .login-card .form-label {
+                margin-bottom: 6px;
+            }
+
+            .login-card .form-control {
+                height: 38px;
+            }
+
+            .login-card .mb-3 {
+                margin-bottom: 12px !important;
+            }
+
+            .login-card .btn-success {
+                height: 42px;
+            }
+
+            .login-card .register-text {
+                margin-top: 14px;
+            }
+
+        .login-watermark {
+            width: 100%;
+        }
+    }
+
+    /* Short screens */
+    @@media (max-height: 650px) and (min-width: 651px) {
+        .login-left {
+            padding: 12px 20px;
+        }
+
+        .school-logo {
+            width: 150px;
+            height: 150px;
+            margin-bottom: 15px;
+        }
+
+        .login-left h2 {
+            font-size: 23px;
+        }
+
+        .login-description {
+            font-size: 16px;
+            margin-bottom: 16px;
+        }
+
+        .login-benefits {
+            font-size: 15px;
+        }
+
+        .login-card {
+            padding: 20px 30px;
+        }
+
+            .login-card h3 {
+                margin-bottom: 16px;
+            }
+    }
+</style>
+
+<div class="login-page">
+
+    <section class="login-left">
+
+        <div class="school-logo">
+            <img src="~/images/school-logo.png"
+                 alt="Setshabelo Public School logo" />
+        </div>
+
+        <h2>Setshabelo Admission System</h2>
+
+        <p class="login-description">
+            The place where everything connects.<br />
+            Making it easy for you and your child.
+        </p>
+
+        <ul class="login-benefits">
+            <li>Apply for admission online</li>
+            <li>Track your application status</li>
+            <li>Upload documents securely</li>
+            <li>Get updates every step of the way</li>
+        </ul>
+
+    </section>
+
+    <section class="login-right">
+
+        <img src="~/images/school-logo.png"
+             class="login-watermark"
+             alt=""
+             aria-hidden="true" />
+
+        <div class="login-card">
+
+            <h3>Welcome back</h3>
+
+            <form asp-action="Login" method="post">
+
+                <div asp-validation-summary="ModelOnly"
+                     class="text-danger mb-3"></div>
+
+                <div class="mb-3">
+                    <label asp-for="Email" class="form-label"></label>
+
+                    <input asp-for="Email" class="form-control" />
+
+                    <span asp-validation-for="Email"
+                          class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Password" class="form-label"></label>
+
+                    <input asp-for="Password"
+                           type="password"
+                           class="form-control" />
+
+                    <span asp-validation-for="Password"
+                          class="text-danger"></span>
+                </div>
+
+                <button type="submit" class="btn btn-success w-100">
+                    Log in
+                </button>
+
+            </form>
+
+            <p class="register-text">
+                Don't have an account?
+                <a asp-action="Register">Create one here</a>
+            </p>
+
+        </div>
+
+    </section>
+
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
