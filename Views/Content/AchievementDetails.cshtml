@@ -1,0 +1,255 @@
+@model SetshabeloAdmissionSystem.ViewModels.AchievementDetailsViewModel
+
+@{
+    ViewData["Title"] = "Achievement Details";
+    var a = Model.Achievement;
+}
+
+<style>
+    .achievement-page {
+        max-width: 1000px;
+        margin: 0 auto;
+    }
+
+    .page-heading {
+        color: #1b4d3e;
+        font-weight: 700;
+    }
+
+    .btn-back {
+        border: 1px solid #1b4d3e;
+        color: #1b4d3e;
+        background: white;
+        border-radius: 8px;
+        padding: 9px 16px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.2s ease;
+    }
+
+        .btn-back:hover {
+            background: #1b4d3e;
+            color: white;
+        }
+
+    .achievement-card {
+        border: none;
+        border-radius: 16px;
+        overflow: hidden;
+        background: white;
+        box-shadow: 0 5px 18px rgba(27, 77, 62, 0.12);
+    }
+
+    .achievement-image {
+        display: block;
+        width: 100%;
+        max-height: 400px;
+        object-fit: cover;
+        background: #eaf2ec;
+    }
+
+    .achievement-header {
+        background: linear-gradient(135deg, #1b4d3e, #28745a);
+        color: white;
+        padding: 25px 28px;
+    }
+
+        .achievement-header h3 {
+            font-weight: 700;
+            margin-bottom: 12px;
+            overflow-wrap: anywhere;
+        }
+
+    .achievement-meta {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 10px;
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 0.9rem;
+        margin: 0;
+    }
+
+    .visibility-badge {
+        display: inline-block;
+        padding: 5px 11px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 700;
+    }
+
+    .visibility-public {
+        color: #d9fbe7;
+        background: rgba(255, 255, 255, 0.15);
+        border: 1px solid rgba(217, 251, 231, 0.5);
+    }
+
+    .visibility-hidden {
+        color: #fff0c2;
+        background: rgba(255, 255, 255, 0.12);
+        border: 1px solid rgba(255, 240, 194, 0.5);
+    }
+
+    .achievement-body {
+        padding: 28px;
+    }
+
+    .description-label {
+        color: #1b4d3e;
+        font-size: 1rem;
+        font-weight: 700;
+        margin-bottom: 12px;
+    }
+
+    .achievement-description {
+        color: #34443d;
+        font-size: 1rem;
+        line-height: 1.8;
+        white-space: pre-wrap;
+        overflow-wrap: anywhere;
+        margin-bottom: 0;
+    }
+
+    .empty-description {
+        color: #718078;
+        font-style: italic;
+        margin-bottom: 0;
+    }
+
+    .achievement-footer {
+        background: #f4f8f5;
+        border-top: 1px solid #e1ebe4;
+        padding: 18px 28px;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .btn-edit {
+        background: #1b4d3e;
+        color: white;
+        border: 1px solid #1b4d3e;
+        border-radius: 8px;
+        padding: 10px 18px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.2s ease;
+    }
+
+        .btn-edit:hover {
+            background: #14392e;
+            color: white;
+        }
+
+    .btn-delete {
+        background: white;
+        color: #b42332;
+        border: 1px solid #b42332;
+        border-radius: 8px;
+        padding: 10px 18px;
+        font-weight: 600;
+        transition: all 0.2s ease;
+    }
+
+        .btn-delete:hover {
+            background: #b42332;
+            color: white;
+        }
+
+    @@media (max-width: 576px) {
+        .page-header {
+            align-items: stretch !important;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .btn-back {
+            text-align: center;
+        }
+
+        .achievement-header,
+        .achievement-body {
+            padding: 20px;
+        }
+
+        .achievement-footer {
+            padding: 16px 20px;
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .btn-edit,
+        .btn-delete {
+            display: block;
+            text-align: center;
+            width: 100%;
+        }
+    }
+</style>
+
+<div class="achievement-page">
+    <div class="page-header d-flex justify-content-between align-items-center mb-4">
+        <h2 class="page-heading mb-0">Achievement</h2>
+
+        <a asp-action="ManageContent" class="btn-back">
+            &larr; Back to Manage Content
+        </a>
+    </div>
+
+    <div class="achievement-card">
+        @if (!string.IsNullOrEmpty(a.ImageUrl))
+        {
+            <img src="@a.ImageUrl"
+                 class="achievement-image"
+                 alt="@a.Title" />
+        }
+
+        <div class="achievement-header">
+            <h3>@a.Title</h3>
+
+            <div class="achievement-meta">
+                <span>
+                    <strong>Published:</strong> @a.PublishedAt.ToString("f")
+                </span>
+
+                <span class="visibility-badge @(a.IsPublic ? "visibility-public" : "visibility-hidden")">
+                    @(a.IsPublic ? "Public" : "Hidden")
+                </span>
+            </div>
+        </div>
+
+        <div class="achievement-body">
+            <h4 class="description-label">Achievement Description</h4>
+
+            @if (!string.IsNullOrEmpty(a.Description))
+            {
+                <p class="achievement-description">@a.Description</p>
+            }
+            else
+            {
+                <p class="empty-description">No description.</p>
+            }
+        </div>
+
+        <div class="achievement-footer">
+            <a asp-action="EditAchievement"
+               asp-route-id="@a.AchievementId"
+               class="btn-edit">
+                Edit Achievement
+            </a>
+
+            <form asp-action="DeleteAchievement"
+                  method="post"
+                  class="m-0"
+                  onsubmit="return confirm('Delete this achievement?');">
+
+                <input type="hidden" name="id" value="@a.AchievementId" />
+
+                <button type="submit" class="btn-delete">
+                    Delete
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
