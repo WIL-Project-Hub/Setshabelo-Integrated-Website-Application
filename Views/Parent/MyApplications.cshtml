@@ -1,0 +1,274 @@
+@model SetshabeloAdmissionSystem.ViewModels.MyApplicationsViewModel
+
+@{
+    ViewData["Title"] = "My Applications";
+}
+
+<style>
+    .applications-page {
+        min-height: calc(100vh - 60px);
+        padding: 32px 36px;
+        background: #fff;
+        color: #212121;
+    }
+
+    .applications-heading {
+        margin-bottom: 28px;
+    }
+
+        .applications-heading h2 {
+            font-size: 30px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: #171717;
+        }
+
+        .applications-heading p {
+            color: #707070;
+            margin-bottom: 0;
+        }
+
+    .btn-new-application {
+        background-color: #2d8a42;
+        color: #fff;
+        border: 1px solid #2d8a42;
+        border-radius: 8px;
+        padding: 11px 20px;
+        font-weight: 600;
+        transition: background-color 0.2s ease;
+    }
+
+        .btn-new-application:hover {
+            background-color: #246f35;
+            border-color: #246f35;
+            color: #fff;
+        }
+
+    .applications-card {
+        border: 1px solid #e5eee5;
+        border-radius: 12px;
+        overflow: hidden;
+        background: #fff;
+        box-shadow: 0 3px 12px rgba(0, 0, 0, 0.04);
+    }
+
+    .applications-card-header {
+        padding: 20px 24px;
+        background: #e3f3e3;
+        border-bottom: 1px solid #d5e8d5;
+    }
+
+        .applications-card-header h5 {
+            margin: 0;
+            font-weight: 700;
+            font-size: 18px;
+            color: #244d2d;
+        }
+
+    .applications-table {
+        margin-bottom: 0;
+    }
+
+        .applications-table thead th {
+            background: #f3f8f3;
+            color: #345b3b;
+            font-weight: 600;
+            padding: 16px 24px;
+            border-bottom: 1px solid #e2ebe2;
+            white-space: nowrap;
+        }
+
+        .applications-table tbody td {
+            padding: 18px 24px;
+            vertical-align: middle;
+            border-bottom: 1px solid #eeeeee;
+        }
+
+        .applications-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .applications-table tbody tr:hover {
+            background-color: #f8fcf8;
+        }
+
+    .application-child-name {
+        font-weight: 600;
+        color: #242424;
+    }
+
+    .application-grade,
+    .application-date {
+        color: #656565;
+    }
+
+    .application-status {
+        display: inline-block;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+    .badge-status-Pending {
+        background: #fff1c2;
+        color: #795900;
+    }
+
+    .badge-status-UnderReview {
+        background: #d9f1f4;
+        color: #17616b;
+    }
+
+    .badge-status-Accepted {
+        background: #d9f0df;
+        color: #216b35;
+    }
+
+    .badge-status-Rejected {
+        background: #f9dddd;
+        color: #a12626;
+    }
+
+    .btn-view-application {
+        background: #fff;
+        color: #2d8a42;
+        border: 1px solid #2d8a42;
+        border-radius: 7px;
+        padding: 7px 18px;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-block;
+        text-align: center;
+    }
+
+        .btn-view-application:hover {
+            background: #2d8a42;
+            color: #fff;
+        }
+
+    .applications-empty {
+        padding: 48px 24px;
+        text-align: center;
+        background: #fff;
+    }
+
+        .applications-empty h5 {
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .applications-empty p {
+            color: #707070;
+            margin-bottom: 0;
+        }
+
+    @@media (max-width: 768px) {
+        .applications-page {
+            padding: 24px 16px;
+        }
+
+        .applications-heading {
+            align-items: flex-start !important;
+            gap: 16px;
+            flex-direction: column;
+        }
+
+            .applications-heading h2 {
+                font-size: 25px;
+            }
+
+        .applications-table thead th,
+        .applications-table tbody td {
+            padding: 14px 16px;
+        }
+    }
+</style>
+
+<div class="applications-page">
+    <div class="applications-heading d-flex justify-content-between align-items-center">
+        <div>
+            <h2>My Applications</h2>
+            <p>View your child's admission applications and track their status.</p>
+        </div>
+
+        <a asp-action="NewApplication" class="btn btn-new-application">
+            + New Application
+        </a>
+    </div>
+
+    <div class="applications-card">
+        <div class="applications-card-header">
+            <h5>Submitted Applications</h5>
+        </div>
+
+        @if (!Model.Applications.Any())
+        {
+            <div class="applications-empty">
+                <h5>No applications yet</h5>
+                <p>You haven't submitted any applications yet.</p>
+            </div>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table applications-table align-middle">
+                    <thead>
+                        <tr>
+                            <th>Child Name</th>
+                            <th>Grade</th>
+                            <th>Submitted</th>
+                            <th>Status</th>
+                            <th class="text-end">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var app in Model.Applications)
+                        {
+                            var badgeClass = app.ApplicationStatus.Replace(" ", "") switch
+                            {
+                                "Pending" => "badge-status-Pending",
+                                "UnderReview" => "badge-status-UnderReview",
+                                "Accepted" => "badge-status-Accepted",
+                                "Rejected" => "badge-status-Rejected",
+                                _ => "bg-secondary text-white"
+                            };
+
+                            <tr>
+                                <td>
+                                    <span class="application-child-name">
+                                        @app.ChildFullName
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="application-grade">
+                                        @app.GradeApplyingFor
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="application-date">
+                                        @app.SubmissionDate.ToShortDateString()
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="application-status @badgeClass">
+                                        @app.ApplicationStatus
+                                    </span>
+                                </td>
+                                <td class="text-end">
+                                    <a asp-action="ApplicationStatus"
+                                       asp-route-id="@app.ApplicationId"
+                                       class="btn-view-application">
+                                        View
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</div>
