@@ -1,0 +1,203 @@
+@model List<SetshabeloAdmissionSystem.Models.Achievement>
+
+@{
+    ViewData["Title"] = "Achievements";
+}
+
+<style>
+    .achievements-page {
+        min-height: calc(100vh - 60px);
+        padding: 32px 36px;
+        background: #fff;
+        color: #212121;
+    }
+
+    .achievements-heading {
+        margin-bottom: 28px;
+    }
+
+        .achievements-heading h2 {
+            font-size: 30px;
+            font-weight: 700;
+            color: #171717;
+            margin-bottom: 8px;
+        }
+
+        .achievements-heading p {
+            color: #707070;
+            margin-bottom: 0;
+        }
+
+    .achievements-grid {
+        row-gap: 24px;
+    }
+
+    .achievement-card {
+        height: 100%;
+        border: 1px solid #e5eee5;
+        border-radius: 12px;
+        overflow: hidden;
+        background: #fff;
+        box-shadow: 0 3px 12px rgba(0, 0, 0, 0.04);
+        transition: box-shadow 0.2s ease, transform 0.2s ease;
+    }
+
+        .achievement-card:hover {
+            box-shadow: 0 6px 18px rgba(45, 138, 66, 0.10);
+            transform: translateY(-2px);
+        }
+
+    .achievement-accent {
+        height: 5px;
+        background: #2d8a42;
+    }
+
+    .achievement-image {
+        display: block;
+        width: 100%;
+        height: 240px;
+        object-fit: cover;
+        background: #f3f8f3;
+    }
+
+    .achievement-image-placeholder {
+        height: 120px;
+        background: #f3f8f3;
+        border-bottom: 1px solid #e5eee5;
+    }
+
+    .achievement-card-body {
+        padding: 24px;
+    }
+
+    .achievement-title {
+        font-size: 21px;
+        font-weight: 700;
+        color: #244d2d;
+        margin-bottom: 14px;
+        overflow-wrap: anywhere;
+    }
+
+    .achievement-description {
+        color: #454545;
+        font-size: 15px;
+        line-height: 1.8;
+        margin-bottom: 20px;
+        white-space: pre-wrap;
+        overflow-wrap: anywhere;
+    }
+
+    .achievement-footer {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding-top: 14px;
+        border-top: 1px solid #eeeeee;
+        color: #707070;
+        font-size: 13px;
+    }
+
+    .achievement-date-dot {
+        width: 8px;
+        height: 8px;
+        background: #2d8a42;
+        border-radius: 50%;
+        flex-shrink: 0;
+    }
+
+    .achievements-empty {
+        padding: 48px 24px;
+        border: 1px solid #e5eee5;
+        border-radius: 12px;
+        background: #f8fcf8;
+        text-align: center;
+    }
+
+        .achievements-empty h5 {
+            color: #244d2d;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .achievements-empty p {
+            color: #707070;
+            margin-bottom: 0;
+        }
+
+    @@media (max-width: 768px) {
+        .achievements-page {
+            padding: 24px 16px;
+        }
+
+        .achievements-heading h2 {
+            font-size: 25px;
+        }
+
+        .achievement-image {
+            height: 210px;
+        }
+
+        .achievement-card-body {
+            padding: 20px;
+        }
+
+        .achievement-title {
+            font-size: 19px;
+        }
+    }
+</style>
+
+<div class="achievements-page">
+
+    <div class="achievements-heading">
+        <h2>School Achievements</h2>
+        <p>Celebrate the accomplishments and milestones of Setshabelo Primary School.</p>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="achievements-empty">
+            <h5>No achievements posted yet</h5>
+            <p>School achievements will appear here when they are published.</p>
+        </div>
+    }
+    else
+    {
+        <div class="row g-4 achievements-grid">
+            @foreach (var a in Model)
+            {
+                <div class="col-12 col-md-6">
+                    <article class="achievement-card">
+                        <div class="achievement-accent"></div>
+
+                        @if (!string.IsNullOrEmpty(a.ImageUrl))
+                        {
+                            <img src="@a.ImageUrl"
+                                 class="achievement-image"
+                                 alt="@a.Title" />
+                        }
+                        else
+                        {
+                            <div class="achievement-image-placeholder"></div>
+                        }
+
+                        <div class="achievement-card-body">
+                            <h3 class="achievement-title">@a.Title</h3>
+
+                            @if (!string.IsNullOrEmpty(a.Description))
+                            {
+                                <p class="achievement-description">@a.Description</p>
+                            }
+
+                            <div class="achievement-footer">
+                                <span class="achievement-date-dot"></span>
+                                <span>Published: @a.PublishedAt.ToString("f")</span>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            }
+        </div>
+    }
+
+</div>
