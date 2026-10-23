@@ -1,0 +1,162 @@
+@model SetshabeloAdmissionSystem.ViewModels.UpdateDetailsViewModel
+
+@{
+    ViewData["Title"] = "Update Details";
+    var u = Model.Update;
+}
+
+<style>
+    .update-page {
+        max-width: 1000px;
+        margin: 0 auto;
+    }
+
+    .page-heading {
+        color: #1b4d3e;
+        font-weight: 700;
+    }
+
+    .btn-back {
+        border: 1px solid #1b4d3e;
+        color: #1b4d3e;
+        background: white;
+        border-radius: 8px;
+        padding: 9px 16px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.2s ease;
+    }
+
+        .btn-back:hover {
+            background: #1b4d3e;
+            color: white;
+        }
+
+    .update-card {
+        border: none;
+        border-radius: 16px;
+        overflow: hidden;
+        background: white;
+        box-shadow: 0 5px 18px rgba(27, 77, 62, 0.12);
+    }
+
+    .update-card-header {
+        background: linear-gradient(135deg, #1b4d3e, #28745a);
+        color: white;
+        padding: 25px 28px;
+    }
+
+        .update-card-header h3 {
+            margin-bottom: 12px;
+            font-weight: 700;
+            overflow-wrap: anywhere;
+        }
+
+    .update-meta {
+        color: rgba(255, 255, 255, 0.85);
+        font-size: 0.9rem;
+        margin-bottom: 0;
+    }
+
+    .update-card-body {
+        padding: 28px;
+    }
+
+    .update-content {
+        color: #34443d;
+        font-size: 1rem;
+        line-height: 1.8;
+        white-space: pre-wrap;
+        overflow-wrap: anywhere;
+        margin-bottom: 0;
+    }
+
+    .update-card-footer {
+        background: #f4f8f5;
+        border-top: 1px solid #e1ebe4;
+        padding: 18px 28px;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+    }
+
+    .btn-delete {
+        background: #b42332;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 10px 18px;
+        font-weight: 600;
+        transition: background 0.2s ease;
+    }
+
+        .btn-delete:hover {
+            background: #921b28;
+            color: white;
+        }
+
+    @@media (max-width: 576px) {
+        .page-header {
+            align-items: flex-start !important;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .update-card-header,
+        .update-card-body {
+            padding: 20px;
+        }
+
+        .update-card-footer {
+            padding: 16px 20px;
+        }
+
+        .btn-back {
+            width: 100%;
+            text-align: center;
+        }
+    }
+</style>
+
+<div class="update-page">
+    <div class="page-header d-flex justify-content-between align-items-center mb-4">
+        <h2 class="page-heading mb-0">School Update</h2>
+
+        <a asp-action="ManageContent" class="btn-back">
+            &larr; Back to Manage Content
+        </a>
+    </div>
+
+    <div class="update-card">
+        <div class="update-card-header">
+            <h3>@u.Title</h3>
+
+            <p class="update-meta">
+                <strong>Published:</strong> @u.PublishedAt.ToString("f")
+
+                @if (u.UpdatedAt != default && u.UpdatedAt > u.PublishedAt)
+                {
+                    <span> &middot; <strong>Last updated:</strong> @u.UpdatedAt.ToString("f")</span>
+                }
+            </p>
+        </div>
+
+        <div class="update-card-body">
+            <p class="update-content">@u.Content</p>
+        </div>
+
+        <div class="update-card-footer">
+            <form asp-action="DeleteUpdate"
+                  method="post"
+                  class="m-0"
+                  onsubmit="return confirm('Delete this update?');">
+
+                <input type="hidden" name="id" value="@u.UpdateId" />
+
+                <button type="submit" class="btn-delete">
+                    Delete Update
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
