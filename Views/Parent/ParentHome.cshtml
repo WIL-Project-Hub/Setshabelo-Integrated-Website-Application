@@ -1,0 +1,289 @@
+@model SetshabeloAdmissionSystem.ViewModels.ParentHomeViewModel
+
+@{
+    ViewData["Title"] = "Parent Home";
+}
+
+<style>
+    .parent-home,
+    .parent-home * {
+        box-sizing: border-box;
+    }
+
+    .parent-home {
+        position: relative;
+        min-height: calc(100vh - 110px);
+        padding: 30px;
+        overflow: hidden;
+        isolation: isolate;
+    }
+
+        /* Faded school logo background */
+        .parent-home::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-image: url('/images/school-logo.png');
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-size: min(75%, 850px) auto;
+            opacity: 0.10;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+    /* Greeting */
+    .parent-home-header {
+        margin-bottom: 30px;
+    }
+
+        .parent-home-header h2 {
+            color: #202020;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .parent-home-header p {
+            color: #6c757d;
+            margin-bottom: 0;
+        }
+
+    /* Dashboard cards */
+    .parent-action-card {
+        display: block;
+        height: 100%;
+        min-height: 200px;
+        padding: 30px;
+        border: 1px solid rgba(45, 139, 62, 0.10);
+        border-radius: 12px;
+        background: rgba(242, 242, 242, 0.90);
+        color: #222;
+        text-decoration: none;
+        transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+    }
+
+        .parent-action-card:hover {
+            background: rgba(232, 242, 233, 0.97);
+            border-color: #2d8b3e;
+            color: #222;
+            transform: translateY(-2px);
+        }
+
+        .parent-action-card:focus-visible {
+            outline: 3px solid #2d8b3e;
+            outline-offset: 3px;
+        }
+
+        .parent-action-card h5 {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 14px;
+        }
+
+        .parent-action-card p {
+            color: #707070;
+            margin-bottom: 0;
+            line-height: 1.6;
+        }
+
+    .action-accent {
+        width: 42px;
+        height: 4px;
+        margin-bottom: 18px;
+        border-radius: 4px;
+        background: #2d8b3e;
+    }
+
+    .status-accent {
+        background: #1b4d3e;
+    }
+
+    .achievement-accent {
+        background: #789b42;
+    }
+
+    .updates-accent {
+        background: #568b78;
+    }
+
+    /* Recent Activities */
+    .recent-activities {
+        margin-top: 45px;
+        padding: 24px 18px 10px;
+        border-top: 2px solid #bdbdbd;
+    }
+
+        .recent-activities h3 {
+            margin-bottom: 24px;
+            color: #111;
+            font-size: 30px;
+            font-weight: 400;
+        }
+
+    .update-item {
+        padding: 18px 20px;
+        margin-bottom: 14px;
+        border-left: 4px solid #2d8b3e;
+        border-radius: 7px;
+        background: rgba(245, 245, 245, 0.94);
+    }
+
+        .update-item h5 {
+            font-size: 17px;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+    .update-date {
+        color: #777;
+        font-size: 13px;
+        margin-bottom: 8px;
+    }
+
+    .update-content {
+        color: #555;
+        margin-bottom: 0;
+        line-height: 1.6;
+        overflow-wrap: anywhere;
+    }
+
+    .no-updates {
+        padding: 20px;
+        color: #777;
+        background: rgba(245, 245, 245, 0.90);
+        border-radius: 7px;
+    }
+
+    @@media (max-width: 768px) {
+        .parent-home {
+            padding: 20px 12px;
+        }
+
+            .parent-home::before {
+                background-size: 100% auto;
+            }
+
+        .parent-action-card {
+            min-height: 150px;
+            padding: 22px;
+        }
+
+        .recent-activities {
+            margin-top: 30px;
+            padding: 20px 5px 5px;
+        }
+
+            .recent-activities h3 {
+                font-size: 25px;
+            }
+    }
+</style>
+
+<div class="parent-home">
+
+    <!-- Welcome greeting -->
+    <div class="parent-home-header">
+        <h2>Welcome @Model.ParentFirstName</h2>
+        <p>Here's a summary of your applications and school news.</p>
+    </div>
+
+    <!-- Four dashboard cards -->
+    <div class="row g-4">
+
+        <!-- New Application -->
+        <div class="col-md-6">
+            <a asp-action="NewApplication"
+               class="parent-action-card">
+
+                <div class="action-accent"></div>
+
+                <h5>New Application</h5>
+
+                <p>
+                    Start a new admission application for your child
+                </p>
+            </a>
+        </div>
+
+        <!-- Application Status -->
+        <div class="col-md-6">
+            <a asp-action="MyApplications"
+               class="parent-action-card">
+
+                <div class="action-accent status-accent"></div>
+
+                <h5>Application Status</h5>
+
+                <p>
+                    Track the progress of your submitted application
+                </p>
+            </a>
+        </div>
+
+        <!-- Achievements -->
+        <div class="col-md-6">
+            <a asp-action="Achievements"
+               class="parent-action-card">
+
+                <div class="action-accent achievement-accent"></div>
+
+                <h5>Achievements</h5>
+
+                <p>
+                    View the school's achievements
+                </p>
+            </a>
+        </div>
+
+        <!-- News and Updates -->
+        <div class="col-md-6">
+            <a asp-action="Updates"
+               class="parent-action-card">
+
+                <div class="action-accent updates-accent"></div>
+
+                <h5>News &amp; Updates</h5>
+
+                <p>
+                    Stay informed with the latest school news
+                </p>
+            </a>
+        </div>
+
+    </div>
+
+    <!-- Recent Activities: latest three school updates -->
+    <section class="recent-activities">
+
+        <h3>Recent Activities</h3>
+
+        @if (Model.RecentUpdates != null &&
+                Model.RecentUpdates.Any())
+        {
+            foreach (var u in Model.RecentUpdates
+            .OrderByDescending(x => x.PublishedAt)
+            .Take(3))
+            {
+                <article class="update-item">
+
+                    <h5>@u.Title</h5>
+
+                    <div class="update-date">
+                        @u.PublishedAt.ToShortDateString()
+                    </div>
+
+                    <p class="update-content">@u.Content</p>
+
+                </article>
+            }
+        }
+        else
+        {
+            <div class="no-updates">
+                No school updates available yet.
+            </div>
+        }
+
+    </section>
+
+</div>
