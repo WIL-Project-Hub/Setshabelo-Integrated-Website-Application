@@ -1,0 +1,609 @@
+@model SetshabeloAdmissionSystem.ViewModels.ParentApplicationStatusViewModel
+
+@{
+    ViewData["Title"] = "Application Status";
+
+    var app = Model.Application;
+
+    var badgeClass = app.ApplicationStatus.Replace(" ", "") switch
+    {
+        "Pending" => "badge-status-Pending",
+        "UnderReview" => "badge-status-UnderReview",
+        "Accepted" => "badge-status-Accepted",
+        "Rejected" => "badge-status-Rejected",
+        _ => "bg-secondary text-white"
+    };
+}
+
+<style>
+    .status-page {
+        min-height: calc(100vh - 60px);
+        padding: 32px 36px;
+        background: #fff;
+        color: #212121;
+    }
+
+    .status-heading {
+        margin-bottom: 28px;
+        gap: 16px;
+    }
+
+        .status-heading h2 {
+            font-size: 30px;
+            font-weight: 700;
+            color: #171717;
+            margin-bottom: 8px;
+            overflow-wrap: anywhere;
+        }
+
+        .status-heading p {
+            color: #707070;
+            margin-bottom: 0;
+        }
+
+    .btn-status-back {
+        color: #2d8a42;
+        background: #fff;
+        border: 1px solid #2d8a42;
+        border-radius: 8px;
+        padding: 9px 18px;
+        font-weight: 600;
+        text-decoration: none;
+        white-space: nowrap;
+    }
+
+        .btn-status-back:hover {
+            background: #2d8a42;
+            color: #fff;
+        }
+
+    .status-card {
+        border: 1px solid #e5eee5;
+        border-radius: 12px;
+        overflow: hidden;
+        background: #fff;
+        box-shadow: 0 3px 12px rgba(0, 0, 0, 0.04);
+        margin-bottom: 24px;
+    }
+
+    .status-card-header {
+        padding: 18px 24px;
+        background: #e3f3e3;
+        color: #244d2d;
+        border-bottom: 1px solid #d5e8d5;
+        font-size: 17px;
+        font-weight: 700;
+    }
+
+    .status-card-body {
+        padding: 24px;
+    }
+
+    .status-summary {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+        flex-wrap: wrap;
+    }
+
+    .status-summary-label {
+        color: #707070;
+        font-size: 13px;
+        margin-bottom: 5px;
+    }
+
+    .status-summary-value {
+        font-weight: 600;
+        color: #252525;
+    }
+
+    .application-status-badge {
+        display: inline-block;
+        padding: 8px 15px;
+        border-radius: 20px;
+        font-size: 13px;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .badge-status-Pending {
+        background: #fff1c2;
+        color: #795900;
+    }
+
+    .badge-status-UnderReview {
+        background: #d9f1f4;
+        color: #17616b;
+    }
+
+    .badge-status-Accepted {
+        background: #d9f0df;
+        color: #216b35;
+    }
+
+    .badge-status-Rejected {
+        background: #f9dddd;
+        color: #a12626;
+    }
+
+    .information-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 24px;
+    }
+
+    .information-card {
+        border: 1px solid #e5eee5;
+        border-radius: 12px;
+        overflow: hidden;
+        background: #fff;
+        box-shadow: 0 3px 12px rgba(0, 0, 0, 0.04);
+        min-width: 0;
+    }
+
+    .information-card-header {
+        padding: 18px 22px;
+        background: #e3f3e3;
+        border-bottom: 1px solid #d5e8d5;
+        color: #244d2d;
+        font-weight: 700;
+        font-size: 17px;
+    }
+
+    .information-card-body {
+        padding: 10px 22px;
+    }
+
+    .information-row {
+        display: grid;
+        grid-template-columns: minmax(115px, 0.85fr) minmax(0, 1.15fr);
+        gap: 12px;
+        padding: 14px 0;
+        border-bottom: 1px solid #eeeeee;
+        overflow-wrap: anywhere;
+    }
+
+        .information-row:last-child {
+            border-bottom: none;
+        }
+
+    .information-label {
+        color: #707070;
+        font-size: 14px;
+    }
+
+    .information-value {
+        color: #262626;
+        font-size: 14px;
+        font-weight: 600;
+        white-space: pre-wrap;
+        overflow-wrap: anywhere;
+    }
+
+    .status-list {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    .status-list-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+        padding: 16px 24px;
+        border-bottom: 1px solid #eeeeee;
+    }
+
+        .status-list-item:last-child {
+            border-bottom: none;
+        }
+
+    .document-name {
+        font-weight: 600;
+        color: #303030;
+        overflow-wrap: anywhere;
+    }
+
+    .document-type {
+        color: #707070;
+        font-size: 13px;
+    }
+
+    .btn-open-document {
+        color: #2d8a42;
+        border: 1px solid #2d8a42;
+        background: #fff;
+        border-radius: 7px;
+        padding: 7px 16px;
+        font-size: 13px;
+        font-weight: 600;
+        text-decoration: none;
+        white-space: nowrap;
+        flex-shrink: 0;
+    }
+
+        .btn-open-document:hover {
+            color: #fff;
+            background: #2d8a42;
+        }
+
+    .comment-item {
+        padding: 18px 24px;
+        border-bottom: 1px solid #eeeeee;
+    }
+
+        .comment-item:last-child {
+            border-bottom: none;
+        }
+
+    .comment-date {
+        color: #707070;
+        font-size: 13px;
+        margin-bottom: 8px;
+    }
+
+    .comment-text {
+        color: #303030;
+        margin-bottom: 0;
+        overflow-wrap: anywhere;
+        white-space: pre-wrap;
+    }
+
+    .status-empty {
+        padding: 24px;
+        color: #707070;
+        margin: 0;
+    }
+
+    @@media (max-width: 768px) {
+        .status-page {
+            padding: 24px 16px;
+        }
+
+        .status-heading {
+            align-items: flex-start !important;
+        }
+
+            .status-heading h2 {
+                font-size: 24px;
+            }
+
+        .information-grid {
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        .status-card-body {
+            padding: 18px;
+        }
+
+        .information-row {
+            grid-template-columns: 1fr;
+            gap: 5px;
+        }
+
+        .status-list-item {
+            padding: 16px;
+        }
+    }
+
+    @@media (max-width: 400px) {
+        .status-heading {
+            flex-direction: column;
+        }
+
+        .status-summary {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+    }
+</style>
+
+<div class="status-page">
+
+    <!-- Page heading -->
+    <div class="status-heading d-flex justify-content-between align-items-center">
+        <div>
+            <h2>Application Status</h2>
+            <p>Application details for @app.ChildFullName</p>
+        </div>
+
+        <a asp-action="MyApplications" class="btn-status-back">
+            &larr; Back to Applications
+        </a>
+    </div>
+
+    <!-- Current application status -->
+    <div class="status-card">
+        <div class="status-card-header">
+            Application Overview
+        </div>
+
+        <div class="status-card-body">
+            <div class="status-summary">
+                <div>
+                    <div class="status-summary-label">Child's Name</div>
+                    <div class="status-summary-value">@app.ChildFullName</div>
+                </div>
+
+                <div>
+                    <div class="status-summary-label">Current Status</div>
+                    <span class="application-status-badge @badgeClass">
+                        @app.ApplicationStatus
+                    </span>
+                </div>
+
+                <div>
+                    <div class="status-summary-label">Date Submitted</div>
+                    <div class="status-summary-value">
+                        @app.SubmissionDate.ToString("f")
+                    </div>
+                </div>
+
+                @if (app.ReviewedDate.HasValue)
+                {
+                    <div>
+                        <div class="status-summary-label">Date Reviewed</div>
+                        <div class="status-summary-value">
+                            @app.ReviewedDate.Value.ToString("f")
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- Child and parent information -->
+    <div class="information-grid">
+
+        <div class="information-card">
+            <div class="information-card-header">
+                Child Information
+            </div>
+
+            <div class="information-card-body">
+                <div class="information-row">
+                    <span class="information-label">Full Name</span>
+                    <span class="information-value">@app.ChildFullName</span>
+                </div>
+
+                <div class="information-row">
+                    <span class="information-label">Date of Birth</span>
+                    <span class="information-value">
+                        @(app.ChildDateOfBirth?.ToString("yyyy-MM-dd") ?? "—")
+                    </span>
+                </div>
+
+                <div class="information-row">
+                    <span class="information-label">Grade Applying For</span>
+                    <span class="information-value">@app.GradeApplyingFor</span>
+                </div>
+
+                <div class="information-row">
+                    <span class="information-label">Gender</span>
+                    <span class="information-value">@app.ChildGender</span>
+                </div>
+
+                <div class="information-row">
+                    <span class="information-label">Race</span>
+                    <span class="information-value">@(app.ChildRace ?? "—")</span>
+                </div>
+
+                <div class="information-row">
+                    <span class="information-label">ID / Birth Certificate</span>
+                    <span class="information-value">@(app.ChildIdNumber ?? "—")</span>
+                </div>
+
+                <div class="information-row">
+                    <span class="information-label">Citizenship</span>
+                    <span class="information-value">@(app.ChildCitizenship ?? "—")</span>
+                </div>
+
+                <div class="information-row">
+                    <span class="information-label">Home Language</span>
+                    <span class="information-value">@(app.ChildHomeLanguage ?? "—")</span>
+                </div>
+
+                <div class="information-row">
+                    <span class="information-label">Pre-Primary Education</span>
+                    <span class="information-value">@(app.PrePrimaryEducation ?? "—")</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="information-card">
+            <div class="information-card-header">
+                Parent Information
+            </div>
+
+            <div class="information-card-body">
+                <div class="information-row">
+                    <span class="information-label">Full Name</span>
+                    <span class="information-value">
+                        @app.ParentTitle @app.ParentInitials @app.ParentFirstName @app.ParentLastName
+                    </span>
+                </div>
+
+                <div class="information-row">
+                    <span class="information-label">Relationship</span>
+                    <span class="information-value">@(app.ParentRelationship ?? "—")</span>
+                </div>
+
+                <div class="information-row">
+                    <span class="information-label">ID Number</span>
+                    <span class="information-value">@(app.ParentIdNumber ?? "—")</span>
+                </div>
+
+                <div class="information-row">
+                    <span class="information-label">Phone</span>
+                    <span class="information-value">@(app.ParentPhone ?? "—")</span>
+                </div>
+
+                <div class="information-row">
+                    <span class="information-label">Email</span>
+                    <span class="information-value">@(app.ParentEmail ?? "—")</span>
+                </div>
+
+                <div class="information-row">
+                    <span class="information-label">Occupation</span>
+                    <span class="information-value">@(app.ParentOccupation ?? "—")</span>
+                </div>
+
+                <div class="information-row">
+                    <span class="information-label">Employer</span>
+                    <span class="information-value">@(app.ParentEmployer ?? "—")</span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Address & Previous Education -->
+    <div class="information-grid mt-4">
+        <div class="information-card">
+            <div class="information-card-header">
+                Address Details
+            </div>
+            <div class="information-card-body">
+                <div class="information-row">
+                    <span class="information-label">Physical Address</span>
+                    <span class="information-value">@(app.PhysicalAddress ?? "—")</span>
+                </div>
+                <div class="information-row">
+                    <span class="information-label">City / Suburb</span>
+                    <span class="information-value">@(app.CityOrSuburb ?? "—")</span>
+                </div>
+                <div class="information-row">
+                    <span class="information-label">Postal Code</span>
+                    <span class="information-value">@(app.PostalCode ?? "—")</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="information-card">
+            <div class="information-card-header">
+                Previous Education
+            </div>
+            <div class="information-card-body">
+                <div class="information-row">
+                    <span class="information-label">Previous School</span>
+                    <span class="information-value">@(app.PreviousSchool ?? "—")</span>
+                </div>
+                <div class="information-row">
+                    <span class="information-label">Highest Grade Passed</span>
+                    <span class="information-value">@(app.HighestGradePassed ?? "—")</span>
+                </div>
+                <div class="information-row">
+                    <span class="information-label">Year Grade Passed</span>
+                    <span class="information-value">@(app.YearGradePassed ?? "—")</span>
+                </div>
+                <div class="information-row">
+                    <span class="information-label">Accession No.</span>
+                    <span class="information-value">@(app.AccessionNo ?? "—")</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Medical & Emergency -->
+    <div class="information-card mt-4">
+        <div class="information-card-header">
+            Medical & Emergency Contact
+        </div>
+        <div class="information-card-body">
+            <div class="information-row">
+                <span class="information-label">Medical Aid</span>
+                <span class="information-value">@(app.MedicalAid ?? "—")</span>
+            </div>
+            <div class="information-row">
+                <span class="information-label">Medical Aid Number</span>
+                <span class="information-value">@(app.MedicalAidNumber ?? "—")</span>
+            </div>
+            <div class="information-row">
+                <span class="information-label">Medical Aid Main Member</span>
+                <span class="information-value">@(app.MedicalAidMainMember ?? "—")</span>
+            </div>
+            <div class="information-row">
+                <span class="information-label">Doctor Name</span>
+                <span class="information-value">@(app.DoctorName ?? "—")</span>
+            </div>
+            <div class="information-row">
+                <span class="information-label">Doctor Phone</span>
+                <span class="information-value">@(app.DoctorPhone ?? "—")</span>
+            </div>
+            <div class="information-row">
+                <span class="information-label">Emergency Phone</span>
+                <span class="information-value">@(app.EmergencyPhone ?? "—")</span>
+            </div>
+            <div class="information-row">
+                <span class="information-label">Medical Conditions</span>
+                <span class="information-value">@(app.MedicalCondition ?? "—")</span>
+            </div>
+            <div class="information-row">
+                <span class="information-label">Special Problems</span>
+                <span class="information-value">@(app.SpecialProblems ?? "—")</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Uploaded documents -->
+    <div class="status-card mt-4">
+        <div class="status-card-header">
+            Uploaded Documents
+        </div>
+
+        @if (Model.Documents.Any())
+        {
+            <ul class="status-list">
+                @foreach (var d in Model.Documents)
+                {
+                    <li class="status-list-item">
+                        <div>
+                            <div class="document-name">@d.DocumentType</div>
+                            <div class="document-type">Uploaded document</div>
+                        </div>
+
+                        <a href="@d.FileUrl"
+                           target="_blank"
+                           rel="noopener noreferrer"
+                           class="btn-open-document">
+                            Open
+                        </a>
+                    </li>
+                }
+            </ul>
+        }
+        else
+        {
+            <p class="status-empty">No documents uploaded.</p>
+        }
+    </div>
+
+    <!-- Comments from school -->
+    <div class="status-card">
+        <div class="status-card-header">
+            Comments from School
+        </div>
+
+        @if (Model.Comments.Any())
+        {
+            @foreach (var c in Model.Comments)
+            {
+                <div class="comment-item">
+                    <div class="comment-date">
+                        @c.CreatedAt.ToString("f")
+                    </div>
+
+                    <p class="comment-text">@c.CommentText</p>
+                </div>
+            }
+        }
+        else
+        {
+            <p class="status-empty">No comments yet.</p>
+        }
+    </div>
+
+</div>
