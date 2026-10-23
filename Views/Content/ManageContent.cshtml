@@ -1,0 +1,414 @@
+@model SetshabeloAdmissionSystem.ViewModels.ManageContentViewModel
+
+@{
+    ViewData["Title"] = "Manage Content";
+}
+
+<style>
+    .manage-content-page {
+        min-height: calc(100vh - 160px);
+        padding: 24px 0 36px;
+        color: #212121;
+    }
+
+    .manage-content-heading {
+        color: #1b4d3e;
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 8px;
+    }
+
+    .manage-content-subtitle {
+        color: #6c757d;
+        margin-bottom: 26px;
+    }
+
+    /* Publish buttons */
+    .content-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .content-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        padding: 9px 16px;
+        border-radius: 8px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        text-decoration: none;
+        white-space: nowrap;
+        transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+    }
+
+        .content-btn:hover {
+            transform: translateY(-1px);
+        }
+
+    .content-btn-primary {
+        background: #1b4d3e;
+        color: #fff;
+        border: 1px solid #1b4d3e;
+    }
+
+        .content-btn-primary:hover {
+            background: #143b2f;
+            border-color: #143b2f;
+            color: #fff;
+        }
+
+    .content-btn-outline {
+        background: #fff;
+        color: #1b4d3e;
+        border: 1px solid #1b4d3e;
+    }
+
+        .content-btn-outline:hover {
+            background: #1b4d3e;
+            color: #fff;
+        }
+
+    .content-btn-danger {
+        background: #fff;
+        color: #b02a37;
+        border: 1px solid #dc3545;
+    }
+
+        .content-btn-danger:hover {
+            background: #dc3545;
+            color: #fff;
+        }
+
+    .content-btn-sm {
+        padding: 6px 12px;
+        font-size: 0.84rem;
+    }
+
+    .content-btn:focus-visible {
+        outline: 3px solid #b5d8bf;
+        outline-offset: 3px;
+    }
+
+    /* Content sections */
+    .content-section {
+        margin-top: 28px;
+        overflow: hidden;
+        background: #fff;
+        border: 1px solid #e0e9e2;
+        border-radius: 14px;
+        box-shadow: 0 4px 14px rgba(27, 77, 62, 0.07);
+    }
+
+    .content-section-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 17px 22px;
+        background: #1b4d3e;
+        color: #fff;
+    }
+
+        .content-section-header h4 {
+            margin: 0;
+            font-size: 1.08rem;
+            font-weight: 650;
+        }
+
+    .content-section-count {
+        padding: 4px 10px;
+        border-radius: 20px;
+        background: rgba(255, 255, 255, 0.15);
+        color: #fff;
+        font-size: 0.82rem;
+        white-space: nowrap;
+    }
+
+    .content-table {
+        margin: 0;
+    }
+
+        .content-table thead th {
+            padding: 14px 18px;
+            background: #e8f3eb;
+            color: #1b4d3e;
+            border-bottom: 1px solid #d7e6db;
+            font-size: 0.86rem;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .content-table tbody td {
+            padding: 15px 18px;
+            color: #37423b;
+            border-bottom: 1px solid #edf1ee;
+            vertical-align: middle;
+        }
+
+        .content-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .content-table tbody tr:hover td {
+            background: #f7faf8;
+        }
+
+    .content-item-title {
+        color: #1b4d3e;
+        font-weight: 650;
+    }
+
+    .content-published-date {
+        color: #6c757d;
+        white-space: nowrap;
+        font-size: 0.9rem;
+    }
+
+    .content-empty {
+        padding: 35px 20px;
+        text-align: center;
+        color: #6c757d;
+    }
+
+        .content-empty h5 {
+            margin-bottom: 8px;
+            color: #1b4d3e;
+            font-weight: 650;
+        }
+
+        .content-empty p {
+            margin: 0;
+        }
+
+    .content-row-actions {
+        display: flex;
+        justify-content: flex-end;
+        flex-wrap: wrap;
+        gap: 7px;
+    }
+
+    @@media (max-width: 767.98px) {
+        .manage-content-page {
+            padding: 18px 0 28px;
+        }
+
+        .manage-content-heading {
+            font-size: 1.65rem;
+        }
+
+        .manage-content-top {
+            align-items: flex-start !important;
+            flex-direction: column;
+        }
+
+        .content-actions {
+            width: 100%;
+        }
+
+            .content-actions .content-btn {
+                flex: 1;
+            }
+
+        .content-section-header {
+            padding: 15px 17px;
+        }
+
+        .content-table thead th,
+        .content-table tbody td {
+            padding: 13px 14px;
+        }
+    }
+</style>
+
+<div class="manage-content-page">
+
+    <!-- Page heading and publish actions -->
+    <div class="manage-content-top d-flex justify-content-between align-items-center gap-3 mb-4">
+        <div>
+            <h2 class="manage-content-heading">Manage Content</h2>
+            <p class="manage-content-subtitle mb-0">
+                Publish and manage school updates and achievements.
+            </p>
+        </div>
+
+        <div class="content-actions">
+            <a asp-action="PublishUpdate"
+               class="content-btn content-btn-primary">
+                + Publish Update
+            </a>
+
+            <a asp-action="PublishAchievement"
+               class="content-btn content-btn-outline">
+                + Add Achievement
+            </a>
+        </div>
+    </div>
+
+    <!-- School Updates -->
+    <section class="content-section">
+        <div class="content-section-header">
+            <h4>School Updates</h4>
+
+            <span class="content-section-count">
+                @(Model.Updates?.Count() ?? 0)
+                @(Model.Updates?.Count() == 1 ? "update" : "updates")
+            </span>
+        </div>
+
+        @if (Model.Updates == null || !Model.Updates.Any())
+        {
+            <div class="content-empty">
+                <h5>No school updates yet</h5>
+                <p>Published school updates will appear here.</p>
+            </div>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table table-hover align-middle content-table">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Published</th>
+                            <th class="text-end">Actions</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @foreach (var u in Model.Updates)
+                        {
+                            <tr>
+                                <td>
+                                    <span class="content-item-title">
+                                        @u.Title
+                                    </span>
+                                </td>
+
+                                <td>
+                                    <span class="content-published-date">
+                                        @u.PublishedAt.ToShortDateString()
+                                    </span>
+                                </td>
+
+                                <td>
+                                    <div class="content-row-actions">
+                                        <a asp-action="UpdateDetails"
+                                           asp-route-id="@u.UpdateId"
+                                           class="content-btn content-btn-outline content-btn-sm">
+                                            View
+                                        </a>
+
+                                        <form asp-action="DeleteUpdate"
+                                              method="post"
+                                              class="d-inline"
+                                              onsubmit="return confirm('Delete this update?');">
+
+                                            <input type="hidden"
+                                                   name="id"
+                                                   value="@u.UpdateId" />
+
+                                            <button type="submit"
+                                                    class="content-btn content-btn-danger content-btn-sm">
+                                                Delete
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </section>
+
+    <!-- Achievements -->
+    <section class="content-section">
+        <div class="content-section-header">
+            <h4>Achievements</h4>
+
+            <span class="content-section-count">
+                @(Model.Achievements?.Count() ?? 0)
+                @(Model.Achievements?.Count() == 1
+                                ? "achievement"
+                                : "achievements")
+            </span>
+        </div>
+
+        @if (Model.Achievements == null || !Model.Achievements.Any())
+        {
+            <div class="content-empty">
+                <h5>No achievements yet</h5>
+                <p>Published school achievements will appear here.</p>
+            </div>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table table-hover align-middle content-table">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Published</th>
+                            <th class="text-end">Actions</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @foreach (var a in Model.Achievements)
+                        {
+                            <tr>
+                                <td>
+                                    <span class="content-item-title">
+                                        @a.Title
+                                    </span>
+                                </td>
+
+                                <td>
+                                    <span class="content-published-date">
+                                        @a.PublishedAt.ToShortDateString()
+                                    </span>
+                                </td>
+
+                                <td>
+                                    <div class="content-row-actions">
+                                        <a asp-action="AchievementDetails"
+                                           asp-route-id="@a.AchievementId"
+                                           class="content-btn content-btn-outline content-btn-sm">
+                                            View
+                                        </a>
+
+                                        <a asp-action="EditAchievement"
+                                           asp-route-id="@a.AchievementId"
+                                           class="content-btn content-btn-primary content-btn-sm">
+                                            Edit
+                                        </a>
+
+                                        <form asp-action="DeleteAchievement"
+                                              method="post"
+                                              class="d-inline"
+                                              onsubmit="return confirm('Delete this achievement?');">
+
+                                            <input type="hidden"
+                                                   name="id"
+                                                   value="@a.AchievementId" />
+
+                                            <button type="submit"
+                                                    class="content-btn content-btn-danger content-btn-sm">
+                                                Delete
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </section>
+
+</div>
