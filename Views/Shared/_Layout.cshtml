@@ -1,49 +1,403 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Setshabelo_Integrated_Website_Application</title>
+
+    <title>@ViewData["Title"] — Setshabelo Admission System</title>
+
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/Setshabelo_Integrated_Website_Application.styles.css" asp-append-version="true" />
+
+    <style>
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            min-height: 100%;
+        }
+
+        /* Navigation bar */
+        .navbar-setshabelo {
+            background: linear-gradient(135deg, #164b36, #237447);
+            padding: 10px 0;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.16);
+            position: relative;
+            z-index: 1000;
+        }
+
+            .navbar-setshabelo .container {
+                gap: 16px;
+            }
+
+            /* School logo and brand */
+            .navbar-setshabelo .navbar-brand {
+                display: inline-flex;
+                align-items: center;
+                gap: 10px;
+                color: #fff !important;
+                font-size: 1.2rem;
+                font-weight: 750;
+                letter-spacing: 0.3px;
+                margin-right: 18px;
+                white-space: nowrap;
+            }
+
+        .school-logo {
+            width: 38px;
+            height: 38px;
+            object-fit: contain;
+            background: #fff;
+            border-radius: 50%;
+            padding: 3px;
+            border: 2px solid rgba(255, 255, 255, 0.85);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.18);
+        }
+
+        /* Navigation links */
+        .navbar-setshabelo .navbar-nav {
+            align-items: center;
+            gap: 6px;
+        }
+
+        .navbar-setshabelo .nav-link {
+            color: #fff !important;
+            font-size: 0.9rem;
+            font-weight: 600;
+            padding: 9px 14px !important;
+            border: 1px solid transparent;
+            border-radius: 9px;
+            background: rgba(255, 255, 255, 0.08);
+            transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease, border-color 0.2s ease;
+            white-space: nowrap;
+        }
+
+            .navbar-setshabelo .nav-link:hover,
+            .navbar-setshabelo .nav-link:focus-visible {
+                color: #174d35 !important;
+                background: #fff;
+                border-color: #fff;
+                transform: translateY(-1px);
+            }
+
+            .navbar-setshabelo .nav-link:focus-visible {
+                outline: 3px solid #ffd966;
+                outline-offset: 2px;
+            }
+
+        /* Logout button */
+        .navbar-setshabelo .logout-link {
+            background: #fff;
+            color: #174d35 !important;
+            border: 1px solid #fff;
+            font-weight: 700;
+        }
+
+            .navbar-setshabelo .logout-link:hover {
+                background: #ffd966;
+                border-color: #ffd966;
+                color: #173d2d !important;
+            }
+
+        /* Mobile menu toggle */
+        .navbar-setshabelo .navbar-toggler {
+            border: 1px solid rgba(255, 255, 255, 0.65);
+            border-radius: 8px;
+            padding: 6px 9px;
+            box-shadow: none;
+        }
+
+            .navbar-setshabelo .navbar-toggler:focus {
+                box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.2);
+            }
+
+        .navbar-setshabelo .navbar-toggler-icon {
+            filter: brightness(0) invert(1);
+        }
+
+        /* Status badges */
+        .badge-status-Pending {
+            background: #ffc107;
+            color: #000;
+        }
+
+        .badge-status-UnderReview {
+            background: #17a2b8;
+            color: #fff;
+        }
+
+        .badge-status-Accepted {
+            background: #28a745;
+            color: #fff;
+        }
+
+        .badge-status-Rejected {
+            background: #dc3545;
+            color: #fff;
+        }
+
+        /* Application wizard */
+        .wizard-step {
+            display: none;
+        }
+
+            .wizard-step.active {
+                display: block;
+            }
+
+        /* Full-screen login layout only */
+        body.login-layout {
+            width: 100%;
+            height: 100vh;
+            height: 100dvh;
+            min-height: 0;
+            overflow: hidden;
+        }
+
+        .login-layout header,
+        .login-layout footer {
+            display: none !important;
+        }
+
+        .login-layout .login-main {
+            display: block;
+            width: 100%;
+            max-width: none;
+            height: 100vh;
+            height: 100dvh;
+            min-height: 0;
+            margin: 0 !important;
+            padding: 0 !important;
+            overflow: hidden;
+        }
+
+        /* Responsive navigation */
+        @@media (max-width: 991.98px) {
+            .navbar-setshabelo .navbar-collapse {
+                padding-top: 14px;
+            }
+
+            .navbar-setshabelo .navbar-nav {
+                align-items: stretch;
+                gap: 7px;
+            }
+
+            .navbar-setshabelo .nav-link {
+                display: block;
+                padding: 10px 14px !important;
+            }
+
+            .navbar-setshabelo .logout-nav {
+                margin-top: 10px;
+            }
+
+            .navbar-setshabelo .container {
+                gap: 8px;
+            }
+        }
+
+        @@media (max-width: 575.98px) {
+            .navbar-setshabelo .navbar-brand {
+                font-size: 1.05rem;
+            }
+
+            .school-logo {
+                width: 34px;
+                height: 34px;
+            }
+        }
+    </style>
 </head>
-<body>
+
+<body class="@(
+      ViewData["Title"]?.ToString() == "Login" ||
+      ViewData["Title"]?.ToString() == "Create Account"
+          ? "login-layout"
+          : ""
+)">
+
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Setshabelo_Integrated_Website_Application</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
+        <nav class="navbar navbar-expand-lg navbar-dark navbar-setshabelo">
+            <div class="container">
+
+                <a class="navbar-brand"
+                   asp-controller="Parent"
+                   asp-action="ParentHome"
+                   aria-label="Setshabelo home">
+
+                    <img src="~/images/school-logo.png"
+                         alt="Setshabelo school logo"
+                         class="school-logo" />
+
+                    <span>Setshabelo</span>
+                </a>
+
+                <button class="navbar-toggler"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#mainNav"
+                        aria-controls="mainNav"
+                        aria-expanded="false"
+                        aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
+
+                <div class="collapse navbar-collapse" id="mainNav">
+                    <ul class="navbar-nav me-auto">
+
+                        @if (User.Identity?.IsAuthenticated == true)
+                        {
+                        @* Allow BOTH Admin and SuperAdmin to see admin links *@
+                            if (User.IsInRole("Admin") || User.IsInRole("SuperAdmin"))
+                            {
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link"
+                               asp-controller="Admin"
+                               asp-action="Dashboard">Dashboard</a>
                         </li>
+
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            <a class="nav-link"
+                               asp-controller="Admin"
+                               asp-action="ApplicationList">Applications</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link"
+                               asp-controller="Content"
+                               asp-action="ManageContent">Manage Content</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link"
+                               asp-controller="Content"
+                               asp-action="PublishUpdate">Publish Update</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link"
+                               asp-controller="Content"
+                               asp-action="PublishAchievement">Publish Achievement</a>
+                        </li>
+
+                        @* SuperAdmin only — Add Admin button *@
+                                if (User.IsInRole("SuperAdmin"))
+                                {
+                        <li class="nav-item">
+                            <a class="nav-link"
+                               asp-controller="SuperAdmin"
+                               asp-action="RegisterAdmin"
+                               style="background: #ffd966; color: #173d2d !important; font-weight: 700;">
+                                + Add Admin
+                            </a>
+                        </li>
+                                }
+                            }
+                            else if (User.IsInRole("Parent"))
+                            {
+                        <li class="nav-item">
+                            <a class="nav-link"
+                               asp-controller="Parent"
+                               asp-action="ParentHome">Home</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link"
+                               asp-controller="Parent"
+                               asp-action="NewApplication">New Application</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link"
+                               asp-controller="Parent"
+                               asp-action="MyApplications">My Applications</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link"
+                               asp-controller="Parent"
+                               asp-action="Updates">Updates</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link"
+                               asp-controller="Parent"
+                               asp-action="Achievements">Achievements</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link"
+                               asp-controller="Parent"
+                               asp-action="Profile">My Profile</a>
+                        </li>
+                            }
+                        }
+                    </ul>
+
+                    @if (User.Identity?.IsAuthenticated == true)
+                    {
+                    <ul class="navbar-nav logout-nav">
+                        <li class="nav-item">
+                            <a class="nav-link logout-link"
+                               asp-controller="Account"
+                               asp-action="Logout">Logout</a>
                         </li>
                     </ul>
+                    }
                 </div>
             </div>
         </nav>
     </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2026 - Setshabelo_Integrated_Website_Application - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+    <main class="@(
+          ViewData["Title"]?.ToString() == "Login" ||
+          ViewData["Title"]?.ToString() == "Create Account"
+              ? "login-main"
+              : "container my-4"
+          )">
+
+        @if (TempData["Success"] != null)
+        {
+        <div class="alert alert-success alert-dismissible fade show">
+            @TempData["Success"]
+
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert"
+                    aria-label="Close"></button>
         </div>
+        }
+
+        @if (TempData["Error"] != null)
+        {
+        <div class="alert alert-danger alert-dismissible fade show">
+            @TempData["Error"]
+
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert"
+                    aria-label="Close"></button>
+        </div>
+        }
+
+        @RenderBody()
+    </main>
+
+    @if (ViewData["Title"]?.ToString() != "Login" &&
+        ViewData["Title"]?.ToString() != "Create Account")
+    {
+    <footer class="text-center text-muted py-3">
+        <small>
+            &copy; @DateTime.Now.Year — Setshabelo Primary School |
+            Group 0: Secret Design
+        </small>
     </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    }
+
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+
     @await RenderSectionAsync("Scripts", required: false)
+
 </body>
 </html>
