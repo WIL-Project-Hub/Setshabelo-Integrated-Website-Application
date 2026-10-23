@@ -1,0 +1,1133 @@
+@model SetshabeloAdmissionSystem.ViewModels.ApplicationWizardViewModel
+
+@{
+    ViewData["Title"] = "New Application";
+    ViewData["FullScreenWizard"] = true;
+
+    var stepNames = new[]
+    {
+        "Child",
+        "Education",
+        "Parent",
+        "Address",
+        "Medical Information",
+        "Documents"
+    };
+}
+
+<style>
+    /* Main wizard */
+    .application-wizard {
+        display: flex;
+        width: 100%;
+        height: 100%;
+        min-height: 0;
+        background: #fff;
+        overflow: hidden;
+    }
+
+    /* Left step navigation */
+    .wizard-sidebar {
+        flex: 0 0 280px;
+        width: 280px;
+        min-width: 280px;
+        padding: 30px 24px;
+        background: #e1f3e1;
+        overflow-y: auto;
+    }
+
+    .wizard-sidebar-title {
+        margin: 0 0 24px;
+        color: #1b4d3e;
+        font-size: 19px;
+        font-weight: 700;
+    }
+
+    .wizard-step-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .wizard-step-list li {
+        margin-bottom: 12px;
+    }
+
+    .wizard-step-link {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        min-height: 54px;
+        padding: 10px 12px;
+        border-radius: 8px;
+        color: #707887;
+        font-size: 17px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: background-color 0.2s ease;
+    }
+
+    .wizard-step-link:hover {
+        background: rgba(255, 255, 255, 0.55);
+        color: #1b4d3e;
+    }
+
+    .wizard-step-number {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex: 0 0 34px;
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        background: #dedede;
+        color: #707887;
+        font-size: 16px;
+        font-weight: 700;
+    }
+
+    .wizard-step-link.active {
+        color: #111;
+    }
+
+    .wizard-step-link.active .wizard-step-number {
+        background: #328b42;
+        color: #fff;
+    }
+
+    .wizard-step-link.completed .wizard-step-number {
+        background: #c4e5c7;
+        color: #1b4d3e;
+    }
+
+    /* Right-hand form panel */
+    .wizard-content {
+        flex: 1;
+        min-width: 0;
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
+        padding: 30px 4%;
+        overflow: hidden;
+    }
+
+    .wizard-heading {
+        flex: 0 0 auto;
+        text-align: center;
+        margin-bottom: 28px;
+    }
+
+    .wizard-heading h1 {
+        margin: 0 0 12px;
+        color: #080808;
+        font-size: 28px;
+        font-weight: 700;
+    }
+
+    .wizard-step-counter {
+        margin: 0;
+        color: #707887;
+        font-size: 19px;
+    }
+
+    .wizard-progress {
+        height: 5px;
+        margin-top: 20px;
+        overflow: hidden;
+        border-radius: 10px;
+        background: #eeeeee;
+    }
+
+    .wizard-progress-bar {
+        height: 100%;
+        border-radius: 10px;
+        background: #328b42;
+        transition: width 0.2s ease;
+    }
+
+    /* Scrollable form area */
+    .wizard-form-scroll {
+        flex: 1 1 auto;
+        min-height: 0;
+        overflow-y: auto;
+        overflow-x: hidden;
+        padding: 0 4px 20px;
+        scrollbar-width: thin;
+        scrollbar-color: #c5d9c7 transparent;
+    }
+
+    .wizard-form-scroll::-webkit-scrollbar {
+        width: 7px;
+    }
+
+    .wizard-form-scroll::-webkit-scrollbar-thumb {
+        background: #c5d9c7;
+        border-radius: 10px;
+    }
+
+    .wizard-step {
+        display: none;
+    }
+
+    .wizard-step.active {
+        display: block;
+        animation: wizardFadeIn 0.2s ease;
+    }
+
+    .wizard-section-title {
+        margin: 0 0 24px;
+        color: #202020;
+        font-size: 22px;
+        font-weight: 650;
+    }
+
+    /* Form fields */
+    .application-wizard .form-label {
+        display: block;
+        margin-bottom: 5px;
+        color: #171717;
+        font-size: 15px;
+        font-weight: 500;
+    }
+
+    .application-wizard .form-control,
+    .application-wizard .form-select {
+        min-height: 44px;
+        border: 1px solid transparent;
+        border-radius: 7px;
+        background-color: #f1f1f1;
+        color: #202020;
+        box-shadow: none;
+    }
+
+    .application-wizard textarea.form-control {
+        min-height: 85px;
+    }
+
+    .application-wizard .form-control:focus,
+    .application-wizard .form-select:focus {
+        border-color: #328b42;
+        background-color: #fff;
+        box-shadow: 0 0 0 3px rgba(50, 139, 66, 0.12);
+    }
+
+    .application-wizard .text-danger {
+        font-size: 13px;
+    }
+
+    /* Grade and choice inputs */
+    .application-wizard .grade-select {
+        max-width: 420px;
+    }
+
+    /* Bottom navigation */
+    .wizard-navigation {
+        flex: 0 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 18px 4px 0;
+        border-top: 1px solid #ededed;
+        background: #fff;
+    }
+
+    .wizard-navigation .btn {
+        min-width: 125px;
+        padding: 11px 20px;
+        border-radius: 7px;
+        font-weight: 600;
+    }
+
+    .btn-wizard-primary {
+        border: 1px solid #328b42;
+        background: #328b42;
+        color: #fff;
+    }
+
+    .btn-wizard-primary:hover {
+        border-color: #247433;
+        background: #247433;
+        color: #fff;
+    }
+
+    .btn-wizard-secondary {
+        border: 1px solid #1b4d3e;
+        background: #fff;
+        color: #1b4d3e;
+    }
+
+    .btn-wizard-secondary:hover {
+        background: #1b4d3e;
+        color: #fff;
+    }
+
+    @@keyframes wizardFadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(4px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Tablet and mobile */
+    @@media (max-width: 991px) {
+        .application-wizard {
+            height: 100%;
+        }
+
+        .wizard-sidebar {
+            flex-basis: 190px;
+            width: 190px;
+            min-width: 190px;
+            padding: 22px 12px;
+        }
+
+        .wizard-step-link {
+            gap: 10px;
+            padding: 8px 5px;
+            font-size: 14px;
+        }
+
+        .wizard-step-number {
+            flex-basis: 30px;
+            width: 30px;
+            height: 30px;
+        }
+
+        .wizard-content {
+            padding: 24px 20px;
+        }
+
+        .wizard-heading h1 {
+            font-size: 24px;
+        }
+    }
+
+    @@media (max-width: 600px) {
+        .application-wizard {
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .wizard-sidebar {
+            flex: 0 0 auto;
+            width: 100%;
+            min-width: 0;
+            padding: 10px 12px;
+            overflow-x: auto;
+            overflow-y: hidden;
+        }
+
+        .wizard-sidebar-title {
+            display: none;
+        }
+
+        .wizard-step-list {
+            display: flex;
+            gap: 8px;
+            width: max-content;
+        }
+
+        .wizard-step-list li {
+            margin: 0;
+        }
+
+        .wizard-step-link {
+            flex-direction: column;
+            gap: 4px;
+            min-width: 68px;
+            padding: 4px;
+            text-align: center;
+            font-size: 11px;
+        }
+
+        .wizard-content {
+            flex: 1;
+            padding: 18px 14px;
+        }
+
+        .wizard-heading {
+            margin-bottom: 18px;
+        }
+
+        .wizard-heading h1 {
+            font-size: 22px;
+        }
+
+        .wizard-step-counter {
+            font-size: 15px;
+        }
+
+        .wizard-section-title {
+            font-size: 19px;
+        }
+
+        .wizard-navigation .btn {
+            min-width: 0;
+            padding: 10px 14px;
+        }
+    }
+</style>
+
+<div class="application-wizard">
+
+    <!-- LEFT SIDEBAR -->
+    <aside class="wizard-sidebar">
+
+        <h2 class="wizard-sidebar-title">
+            Admission Application
+        </h2>
+
+        <ol class="wizard-step-list">
+
+            @for (int i = 1; i <= 6; i++)
+            {
+                var stepNumber = i;
+
+                <li>
+                    <div class="wizard-step-link
+                        @(Model.CurrentStep == stepNumber ? "active" : "")
+                        @(Model.CurrentStep > stepNumber ? "completed" : "")">
+
+                        <span class="wizard-step-number">
+                            @stepNumber
+                        </span>
+
+                        <span>@stepNames[i - 1]</span>
+
+                    </div>
+                </li>
+            }
+
+        </ol>
+
+    </aside>
+
+    <!-- RIGHT CONTENT -->
+    <section class="wizard-content">
+
+        <div class="wizard-heading">
+
+            <h1>
+                @switch (Model.CurrentStep)
+                {
+                    case 1:
+                        @:Child's Information
+                        break;
+                    case 2:
+                        @:Previous Education
+                        break;
+                    case 3:
+                        @:Parent Information
+                        break;
+                    case 4:
+                        @:Address & Contact Information
+                        break;
+                    case 5:
+                        @:Medical Information
+                        break;
+                    case 6:
+                        @:Supporting Documents
+                        break;
+                }
+            </h1>
+
+            <p class="wizard-step-counter">
+                Step @Model.CurrentStep of 6
+            </p>
+
+            <div class="wizard-progress">
+                <div class="wizard-progress-bar"
+                     style="width: @(Model.CurrentStep * 100 / 6)%">
+                </div>
+            </div>
+
+        </div>
+
+        <div class="wizard-form-scroll">
+
+            <form id="applicationWizardForm"
+                  asp-action="NewApplication"
+                  method="post"
+                  enctype="multipart/form-data"
+                  novalidate>
+
+                <input type="hidden"
+                       name="CurrentStep"
+                       value="@Model.CurrentStep" />
+
+                <!-- STEP 1: CHILD -->
+                <div class="wizard-step @(Model.CurrentStep == 1 ? "active" : "")">
+
+                    <h3 class="wizard-section-title">
+                        Child Details
+                    </h3>
+
+                    <div class="row g-3">
+
+                        <div class="col-md-6">
+                            <label asp-for="ChildFullName" class="form-label">
+                                Child's Full Name *
+                            </label>
+                            <input asp-for="ChildFullName" class="form-control" />
+                            <span asp-validation-for="ChildFullName"
+                                  class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="ChildDateOfBirth" class="form-label">
+                                Date of Birth *
+                            </label>
+                            <input asp-for="ChildDateOfBirth"
+                                   type="date"
+                                   class="form-control" />
+                            <span asp-validation-for="ChildDateOfBirth"
+                                  class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="ChildGender" class="form-label">
+                                Gender *
+                            </label>
+                            <select asp-for="ChildGender" class="form-select">
+                                <option value="">-- Select --</option>
+                                <option>Male</option>
+                                <option>Female</option>
+                                <option>Other</option>
+                            </select>
+                            <span asp-validation-for="ChildGender"
+                                  class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="ChildIdNumber" class="form-label">
+                                Child ID / Birth Certificate No.
+                            </label>
+                            <input asp-for="ChildIdNumber" class="form-control" />
+                            <span asp-validation-for="ChildIdNumber"
+                                  class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="ChildRace" class="form-label">
+                                Race
+                            </label>
+                            <input asp-for="ChildRace" class="form-control" />
+                            <span asp-validation-for="ChildRace"
+                                  class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="ChildCitizenship" class="form-label">
+                                Citizenship
+                            </label>
+                            <input asp-for="ChildCitizenship" class="form-control" />
+                            <span asp-validation-for="ChildCitizenship"
+                                  class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="CountryOfResidence" class="form-label">
+                                Country of Residence
+                            </label>
+                            <input asp-for="CountryOfResidence" class="form-control" />
+                            <span asp-validation-for="CountryOfResidence"
+                                  class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="Province" class="form-label">
+                                Province
+                            </label>
+                            <input asp-for="Province" class="form-control" />
+                            <span asp-validation-for="Province"
+                                  class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="ChildHomeLanguage" class="form-label">
+                                Home Language
+                            </label>
+                            <input asp-for="ChildHomeLanguage" class="form-control" />
+                            <span asp-validation-for="ChildHomeLanguage"
+                                  class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="PreferredLanguage" class="form-label">
+                                Preferred Teaching Language
+                            </label>
+                            <input asp-for="PreferredLanguage" class="form-control" />
+                            <span asp-validation-for="PreferredLanguage"
+                                  class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="GradeApplyingFor" class="form-label">
+                                Grade Applying For *
+                            </label>
+                            <select asp-for="GradeApplyingFor"
+                                    class="form-select grade-select">
+                                <option value="">-- Select Grade --</option>
+                                <option>Grade R</option>
+                                <option>Grade 1</option>
+                                <option>Grade 2</option>
+                                <option>Grade 3</option>
+                                <option>Grade 4</option>
+                                <option>Grade 5</option>
+                                <option>Grade 6</option>
+                                <option>Grade 7</option>
+                            </select>
+                            <span asp-validation-for="GradeApplyingFor"
+                                  class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="PrePrimaryEducation" class="form-label">
+                                Attended Pre-Primary?
+                            </label>
+                            <select asp-for="PrePrimaryEducation" class="form-select">
+                                <option value="">-- Select --</option>
+                                <option>Yes</option>
+                                <option>No</option>
+                            </select>
+                            <span asp-validation-for="PrePrimaryEducation"
+                                  class="text-danger"></span>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- STEP 2: EDUCATION -->
+                <div class="wizard-step @(Model.CurrentStep == 2 ? "active" : "")">
+
+                    <h3 class="wizard-section-title">
+                        Previous Education
+                    </h3>
+
+                    <div class="row g-3">
+
+                        <div class="col-md-6">
+                            <label asp-for="HighestGradePassed" class="form-label">
+                                Highest Grade Passed
+                            </label>
+                            <input asp-for="HighestGradePassed" class="form-control" />
+                            <span asp-validation-for="HighestGradePassed"
+                                  class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="YearGradePassed" class="form-label">
+                                Year Grade Passed
+                            </label>
+                            <input asp-for="YearGradePassed" class="form-control" />
+                            <span asp-validation-for="YearGradePassed"
+                                  class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="AccessionNo" class="form-label">
+                                Accession No.
+                            </label>
+                            <input asp-for="AccessionNo" class="form-control" />
+                            <span asp-validation-for="AccessionNo"
+                                  class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="PreviousSchool" class="form-label">
+                                Previous School
+                            </label>
+                            <input asp-for="PreviousSchool" class="form-control" />
+                            <span asp-validation-for="PreviousSchool"
+                                  class="text-danger"></span>
+                        </div>
+
+                        <div class="col-12">
+                            <label asp-for="PreviousSchoolAddress" class="form-label">
+                                Previous School Address
+                            </label>
+                            <input asp-for="PreviousSchoolAddress"
+                                   class="form-control" />
+                            <span asp-validation-for="PreviousSchoolAddress"
+                                  class="text-danger"></span>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- STEP 3: PARENT -->
+                <div class="wizard-step @(Model.CurrentStep == 3 ? "active" : "")">
+
+                    <h3 class="wizard-section-title">
+                        Parent / Guardian Details
+                    </h3>
+
+                    <div class="row g-3">
+
+                        <div class="col-md-2">
+                            <label asp-for="ParentTitle" class="form-label">
+                                Title
+                            </label>
+                            <select asp-for="ParentTitle" class="form-select">
+                                <option value="">-- Select --</option>
+                                <option>Mr</option>
+                                <option>Mrs</option>
+                                <option>Ms</option>
+                                <option>Miss</option>
+                                <option>Dr</option>
+                                <option>Prof</option>
+                            </select>
+                            <span asp-validation-for="ParentTitle"
+                                  class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-2">
+                            <label asp-for="ParentInitials" class="form-label">
+                                Initials
+                            </label>
+                            <input asp-for="ParentInitials" class="form-control" />
+                            <span asp-validation-for="ParentInitials"
+                                  class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label asp-for="ParentFirstName" class="form-label">
+                                First Name *
+                            </label>
+                            <input asp-for="ParentFirstName" class="form-control" />
+                            <span asp-validation-for="ParentFirstName"
+                                  class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label asp-for="ParentLastName" class="form-label">
+                                Last Name *
+                            </label>
+                            <input asp-for="ParentLastName" class="form-control" />
+                            <span asp-validation-for="ParentLastName"
+                                  class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="ParentIdNumber" class="form-label">
+                                ID Number
+                            </label>
+                            <input asp-for="ParentIdNumber" class="form-control" />
+                            <span asp-validation-for="ParentIdNumber"
+                                  class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="ParentRace" class="form-label">
+                                Race
+                            </label>
+                            <input asp-for="ParentRace" class="form-control" />
+                            <span asp-validation-for="ParentRace"
+                                  class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="ParentHomeLanguage" class="form-label">
+                                Home Language
+                            </label>
+                            <input asp-for="ParentHomeLanguage" class="form-control" />
+                            <span asp-validation-for="ParentHomeLanguage"
+                                  class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="ParentRelationship" class="form-label">
+                                Relationship *
+                            </label>
+                            <select asp-for="ParentRelationship" class="form-select">
+                                <option value="">-- Select --</option>
+                                <option>Mother</option>
+                                <option>Father</option>
+                                <option>Guardian</option>
+                            </select>
+                            <span asp-validation-for="ParentRelationship"
+                                  class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="ParentOccupation" class="form-label">
+                                Occupation
+                            </label>
+                            <input asp-for="ParentOccupation" class="form-control" />
+                            <span asp-validation-for="ParentOccupation"
+                                  class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="ParentEmployer" class="form-label">
+                                Employer
+                            </label>
+                            <input asp-for="ParentEmployer" class="form-control" />
+                            <span asp-validation-for="ParentEmployer"
+                                  class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="ParentPhone" class="form-label">
+                                Phone *
+                            </label>
+                            <input asp-for="ParentPhone" class="form-control" />
+                            <span asp-validation-for="ParentPhone"
+                                  class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="ParentEmail" class="form-label">
+                                Email *
+                            </label>
+                            <input asp-for="ParentEmail"
+                                   type="email"
+                                   class="form-control" />
+                            <span asp-validation-for="ParentEmail"
+                                  class="text-danger"></span>
+                        </div>
+
+                        <div class="col-12">
+                            <label asp-for="ParentAddress" class="form-label">
+                                Postal Address
+                            </label>
+                            <input asp-for="ParentAddress" class="form-control" />
+                            <span asp-validation-for="ParentAddress"
+                                  class="text-danger"></span>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- STEP 4: ADDRESS AND CONTACT -->
+                <div class="wizard-step @(Model.CurrentStep == 4 ? "active" : "")">
+
+                    <h3 class="wizard-section-title">
+                        Address & Contact Information
+                    </h3>
+
+                    <div class="row g-3">
+
+                        <div class="col-12">
+                            <label asp-for="PhysicalAddress" class="form-label">
+                                Physical Address *
+                            </label>
+                            <input asp-for="PhysicalAddress" class="form-control" />
+                            <span asp-validation-for="PhysicalAddress"
+                                  class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="CityOrSuburb" class="form-label">
+                                City / Suburb
+                            </label>
+                            <input asp-for="CityOrSuburb" class="form-control" />
+                            <span asp-validation-for="CityOrSuburb"
+                                  class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="PostalCode" class="form-label">
+                                Postal Code
+                            </label>
+                            <input asp-for="PostalCode" class="form-control" />
+                            <span asp-validation-for="PostalCode"
+                                  class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="EmergencyPhone" class="form-label">
+                                Emergency Contact Phone
+                            </label>
+                            <input asp-for="EmergencyPhone" class="form-control" />
+                            <span asp-validation-for="EmergencyPhone"
+                                  class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="ChildPhone" class="form-label">
+                                Child Phone (if any)
+                            </label>
+                            <input asp-for="ChildPhone" class="form-control" />
+                            <span asp-validation-for="ChildPhone"
+                                  class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="ChildEmail" class="form-label">
+                                Child Email (if any)
+                            </label>
+                            <input asp-for="ChildEmail"
+                                   type="email"
+                                   class="form-control" />
+                            <span asp-validation-for="ChildEmail"
+                                  class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="ModeOfTransport" class="form-label">
+                                Mode of Transport
+                            </label>
+                            <select asp-for="ModeOfTransport" class="form-select">
+                                <option value="">-- Select --</option>
+                                <option>Walking</option>
+                                <option>Private Vehicle</option>
+                                <option>School Bus</option>
+                                <option>Public Transport</option>
+                                <option>Other</option>
+                            </select>
+                            <span asp-validation-for="ModeOfTransport"
+                                  class="text-danger"></span>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- STEP 5: MEDICAL -->
+                <div class="wizard-step @(Model.CurrentStep == 5 ? "active" : "")">
+
+                    <h3 class="wizard-section-title">
+                        Medical Information
+                    </h3>
+
+                    <div class="row g-3">
+
+                        <div class="col-md-6">
+                            <label asp-for="MedicalAid" class="form-label">
+                                Medical Aid Scheme
+                            </label>
+                            <input asp-for="MedicalAid" class="form-control" />
+                            <span asp-validation-for="MedicalAid"
+                                  class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="MedicalAidNumber" class="form-label">
+                                Medical Aid Number
+                            </label>
+                            <input asp-for="MedicalAidNumber" class="form-control" />
+                            <span asp-validation-for="MedicalAidNumber"
+                                  class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="MedicalAidMainMember" class="form-label">
+                                Main Member
+                            </label>
+                            <input asp-for="MedicalAidMainMember" class="form-control" />
+                            <span asp-validation-for="MedicalAidMainMember"
+                                  class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="DoctorName" class="form-label">
+                                Doctor Name
+                            </label>
+                            <input asp-for="DoctorName" class="form-control" />
+                            <span asp-validation-for="DoctorName"
+                                  class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="DoctorPhone" class="form-label">
+                                Doctor Phone
+                            </label>
+                            <input asp-for="DoctorPhone" class="form-control" />
+                            <span asp-validation-for="DoctorPhone"
+                                  class="text-danger"></span>
+                        </div>
+
+                        <div class="col-12">
+                            <label asp-for="DoctorAddress" class="form-label">
+                                Doctor Address
+                            </label>
+                            <input asp-for="DoctorAddress" class="form-control" />
+                            <span asp-validation-for="DoctorAddress"
+                                  class="text-danger"></span>
+                        </div>
+
+                        <div class="col-12">
+                            <label asp-for="MedicalCondition" class="form-label">
+                                Medical Conditions
+                            </label>
+                            <textarea asp-for="MedicalCondition"
+                                      class="form-control"
+                                      rows="2"></textarea>
+                            <span asp-validation-for="MedicalCondition"
+                                  class="text-danger"></span>
+                        </div>
+
+                        <div class="col-12">
+                            <label asp-for="SpecialProblems" class="form-label">
+                                Special Problems
+                            </label>
+                            <textarea asp-for="SpecialProblems"
+                                      class="form-control"
+                                      rows="2"></textarea>
+                            <span asp-validation-for="SpecialProblems"
+                                  class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="ChildDexterity" class="form-label">
+                                Dexterity
+                            </label>
+                            <input asp-for="ChildDexterity" class="form-control" />
+                            <span asp-validation-for="ChildDexterity"
+                                  class="text-danger"></span>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- STEP 6: DOCUMENTS -->
+                <div class="wizard-step @(Model.CurrentStep == 6 ? "active" : "")">
+
+                    <h3 class="wizard-section-title">
+                        Supporting Documents
+                    </h3>
+
+                    <p class="text-muted mb-4">
+                        Upload the supporting documents for your application.
+                    </p>
+
+                    <div class="row g-4">
+
+                        <div class="col-md-6">
+                            <label class="form-label">
+                                Immunization Record
+                            </label>
+                            <select name="DocumentTypes"
+                                    class="form-select mb-2">
+                                <option>Upload Immunization Record</option>
+                            </select>
+                            <input type="file"
+                                   name="Documents"
+                                   class="form-control" />
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">
+                                Birth Certificate
+                            </label>
+                            <select name="DocumentTypes"
+                                    class="form-select mb-2">
+                                <option>Upload Birth Certificate</option>
+                            </select>
+                            <input type="file"
+                                   name="Documents"
+                                   class="form-control" />
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">
+                                Previous School Progress Report
+                            </label>
+                            <select name="DocumentTypes"
+                                    class="form-select mb-2">
+                                <option>
+                                    Upload Previous School Progress Report
+                                </option>
+                            </select>
+                            <input type="file"
+                                   name="Documents"
+                                   class="form-control" />
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">
+                                Transfer Letter
+                            </label>
+                            <select name="DocumentTypes"
+                                    class="form-select mb-2">
+                                <option>
+                                    Upload Transfer Letter (if applicable)
+                                </option>
+                            </select>
+                            <input type="file"
+                                   name="Documents"
+                                   class="form-control" />
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- VALIDATION ERRORS -->
+                @if (!ViewData.ModelState.IsValid)
+                {
+                    <div class="alert alert-danger mt-4">
+                        <strong>
+                            Please fix the following before continuing:
+                        </strong>
+
+                        <ul class="mb-0 mt-2">
+                            @foreach (var error in
+                                ViewData.ModelState.Values.SelectMany(
+                                    v => v.Errors))
+                            {
+                                if (!string.IsNullOrWhiteSpace(
+                                    error.ErrorMessage))
+                                {
+                                    <li>@error.ErrorMessage</li>
+                                }
+                            }
+                        </ul>
+                    </div>
+                }
+
+            </form>
+        </div>
+
+        <!-- NAVIGATION BUTTONS -->
+        <div class="wizard-navigation">
+
+            <div>
+                @if (Model.CurrentStep > 1)
+                {
+                    <button type="submit"
+                            form="applicationWizardForm"
+                            name="action"
+                            value="prev"
+                            class="btn btn-wizard-secondary">
+                        &larr; Previous
+                    </button>
+                }
+            </div>
+
+            <div>
+                @if (Model.CurrentStep < 6)
+                {
+                    <button type="submit"
+                            form="applicationWizardForm"
+                            name="action"
+                            value="next"
+                            class="btn btn-wizard-primary">
+                        Next &rarr;
+                    </button>
+                }
+                else
+                {
+                    <button type="submit"
+                            form="applicationWizardForm"
+                            name="action"
+                            value="submit"
+                            class="btn btn-wizard-primary">
+                        Submit Application
+                    </button>
+                }
+            </div>
+
+        </div>
+
+    </section>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
