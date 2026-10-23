@@ -1,0 +1,237 @@
+@model SetshabeloAdmissionSystem.ViewModels.ParentProfileViewModel
+
+@{
+    ViewData["Title"] = "My Profile";
+}
+
+<style>
+    .profile-page {
+        min-height: calc(100vh - 60px);
+        padding: 32px 36px;
+        background: #fff;
+        color: #212121;
+    }
+
+    .profile-heading {
+        margin-bottom: 28px;
+    }
+
+        .profile-heading h2 {
+            font-size: 30px;
+            font-weight: 700;
+            color: #171717;
+            margin-bottom: 8px;
+        }
+
+        .profile-heading p {
+            color: #707070;
+            margin-bottom: 0;
+        }
+
+    .profile-card {
+        max-width: 760px;
+        margin: 0 auto;
+        border: 1px solid #e5eee5;
+        border-radius: 12px;
+        overflow: hidden;
+        background: #fff;
+        box-shadow: 0 3px 12px rgba(0, 0, 0, 0.04);
+    }
+
+    .profile-card-header {
+        padding: 20px 28px;
+        background: #e3f3e3;
+        border-bottom: 1px solid #d5e8d5;
+    }
+
+        .profile-card-header h5 {
+            margin: 0;
+            color: #244d2d;
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+    .profile-card-body {
+        padding: 30px 28px;
+    }
+
+    .profile-form-label {
+        display: block;
+        margin-bottom: 8px;
+        color: #303030;
+        font-weight: 600;
+        font-size: 14px;
+    }
+
+    .profile-form-control {
+        min-height: 46px;
+        border: 1px solid #d9e2d9;
+        border-radius: 8px;
+        padding: 10px 14px;
+        color: #252525;
+        background-color: #fff;
+    }
+
+        .profile-form-control:focus {
+            border-color: #2d8a42;
+            box-shadow: 0 0 0 3px rgba(45, 138, 66, 0.12);
+        }
+
+        .profile-form-control[readonly] {
+            background-color: #f3f6f3;
+            color: #707070;
+        }
+
+    .profile-help-text {
+        display: block;
+        margin-top: 8px;
+        color: #707070;
+        font-size: 13px;
+        line-height: 1.6;
+    }
+
+    .profile-validation {
+        display: block;
+        margin-top: 5px;
+        font-size: 13px;
+    }
+
+    .profile-validation-summary {
+        padding: 12px 16px;
+        margin-bottom: 24px;
+        border-radius: 8px;
+        background: #fff0f0;
+        color: #a12626;
+    }
+
+    .btn-profile-save {
+        padding: 11px 22px;
+        background: #2d8a42;
+        border: 1px solid #2d8a42;
+        border-radius: 8px;
+        color: #fff;
+        font-weight: 600;
+    }
+
+        .btn-profile-save:hover {
+            background: #246f35;
+            border-color: #246f35;
+            color: #fff;
+        }
+
+    .btn-profile-cancel {
+        padding: 11px 22px;
+        background: #fff;
+        border: 1px solid #d2d8d2;
+        border-radius: 8px;
+        color: #555;
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+        .btn-profile-cancel:hover {
+            background: #f3f8f3;
+            border-color: #2d8a42;
+            color: #244d2d;
+        }
+
+    .profile-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 28px;
+        padding-top: 22px;
+        border-top: 1px solid #eeeeee;
+    }
+
+    @@media (max-width: 768px) {
+        .profile-page {
+            padding: 24px 16px;
+        }
+
+        .profile-heading h2 {
+            font-size: 25px;
+        }
+
+        .profile-card-body {
+            padding: 24px 20px;
+        }
+
+        .profile-card-header {
+            padding: 18px 20px;
+        }
+    }
+</style>
+
+<div class="profile-page">
+
+    <div class="profile-heading">
+        <h2>My Profile</h2>
+        <p>View and update your parent account details.</p>
+    </div>
+
+    <div class="profile-card">
+
+        <div class="profile-card-header">
+            <h5>Profile Information</h5>
+        </div>
+
+        <div class="profile-card-body">
+
+            <form asp-action="Profile" method="post">
+
+                <div asp-validation-summary="ModelOnly"
+                     class="profile-validation-summary"></div>
+
+                <div class="mb-4">
+                    <label asp-for="Email" class="profile-form-label"></label>
+
+                    <input asp-for="Email"
+                           class="form-control profile-form-control"
+                           readonly />
+
+                    <small class="profile-help-text">
+                        Email cannot be changed. Contact the school if you need to update it.
+                    </small>
+                </div>
+
+                <div class="mb-4">
+                    <label asp-for="FirstName" class="profile-form-label"></label>
+
+                    <input asp-for="FirstName"
+                           class="form-control profile-form-control" />
+
+                    <span asp-validation-for="FirstName"
+                          class="text-danger profile-validation"></span>
+                </div>
+
+                <div class="mb-4">
+                    <label asp-for="LastName" class="profile-form-label"></label>
+
+                    <input asp-for="LastName"
+                           class="form-control profile-form-control" />
+
+                    <span asp-validation-for="LastName"
+                          class="text-danger profile-validation"></span>
+                </div>
+
+                <div class="profile-actions">
+                    <button type="submit" class="btn btn-profile-save">
+                        Save Changes
+                    </button>
+
+                    <a asp-action="ParentHome" class="btn-profile-cancel">
+                        Cancel
+                    </a>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
