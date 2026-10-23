@@ -1,0 +1,231 @@
+@model SetshabeloAdmissionSystem.ViewModels.RegisterAdminViewModel
+
+@{
+    ViewData["Title"] = "Register New Admin";
+}
+
+<style>
+    .register-admin-page {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .page-heading {
+        color: #1b4d3e;
+        font-weight: 700;
+    }
+
+    .page-subtitle {
+        color: #6c7b73;
+        margin-bottom: 25px;
+    }
+
+    .admin-form-card {
+        background: white;
+        border: none;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 5px 18px rgba(27, 77, 62, 0.12);
+    }
+
+    .form-card-header {
+        background: linear-gradient(135deg, #1b4d3e, #28745a);
+        color: white;
+        padding: 22px 28px;
+    }
+
+        .form-card-header h4 {
+            margin: 0;
+            font-weight: 700;
+        }
+
+    .form-card-body {
+        padding: 28px;
+    }
+
+    .form-label {
+        color: #1b4d3e;
+        font-weight: 600;
+        margin-bottom: 8px;
+    }
+
+    .form-control {
+        border: 1px solid #cedbd2;
+        border-radius: 8px;
+        padding: 11px 13px;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+        .form-control:focus {
+            border-color: #28745a;
+            box-shadow: 0 0 0 0.2rem rgba(40, 116, 90, 0.15);
+        }
+
+    .validation-summary-errors {
+        background: #fff1f1;
+        border: 1px solid #f0caca;
+        color: #b42332;
+        border-radius: 8px;
+        padding: 12px 16px;
+        margin-bottom: 20px;
+    }
+
+        .validation-summary-errors ul {
+            margin-bottom: 0;
+            padding-left: 20px;
+        }
+
+    .field-validation-error {
+        display: block;
+        font-size: 0.875rem;
+        margin-top: 5px;
+    }
+
+    .form-help {
+        display: block;
+        color: #6c7b73;
+        font-size: 0.875rem;
+        margin-top: 8px;
+    }
+
+    .form-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 25px;
+        padding-top: 20px;
+        border-top: 1px solid #e4ece6;
+    }
+
+    .btn-create-admin {
+        background: #1b4d3e;
+        color: white;
+        border: 1px solid #1b4d3e;
+        border-radius: 8px;
+        padding: 10px 22px;
+        font-weight: 600;
+        transition: all 0.2s ease;
+    }
+
+        .btn-create-admin:hover {
+            background: #14392e;
+            border-color: #14392e;
+            color: white;
+        }
+
+    .btn-cancel {
+        background: white;
+        color: #1b4d3e;
+        border: 1px solid #1b4d3e;
+        border-radius: 8px;
+        padding: 10px 22px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.2s ease;
+    }
+
+        .btn-cancel:hover {
+            background: #eaf2ec;
+            color: #14392e;
+        }
+
+    @@media (max-width: 576px) {
+        .form-card-header,
+        .form-card-body {
+            padding: 20px;
+        }
+
+        .form-actions {
+            flex-direction: column;
+        }
+
+        .btn-create-admin,
+        .btn-cancel {
+            width: 100%;
+            text-align: center;
+        }
+    }
+</style>
+
+<div class="register-admin-page">
+    <h2 class="page-heading">Register New Admin</h2>
+
+    <p class="page-subtitle">
+        Create an administrator account for a school staff member.
+    </p>
+
+    <div class="admin-form-card">
+        <div class="form-card-header">
+            <h4>School Staff Information</h4>
+        </div>
+
+        <div class="form-card-body">
+            <form asp-action="RegisterAdmin" method="post">
+                <div asp-validation-summary="ModelOnly"
+                     class="text-danger"></div>
+
+                <div class="row g-3 mb-4">
+                    <div class="col-md-6">
+                        <label asp-for="FirstName" class="form-label"></label>
+
+                        <input asp-for="FirstName"
+                               class="form-control"
+                               placeholder="Enter first name" />
+
+                        <span asp-validation-for="FirstName"
+                              class="text-danger field-validation-error"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="LastName" class="form-label"></label>
+
+                        <input asp-for="LastName"
+                               class="form-control"
+                               placeholder="Enter last name" />
+
+                        <span asp-validation-for="LastName"
+                              class="text-danger field-validation-error"></span>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label asp-for="Email" class="form-label"></label>
+
+                    <input asp-for="Email"
+                           type="email"
+                           class="form-control"
+                           placeholder="Enter staff email address" />
+
+                    <span asp-validation-for="Email"
+                          class="text-danger field-validation-error"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Password" class="form-label"></label>
+
+                    <input asp-for="Password"
+                           type="password"
+                           class="form-control"
+                           placeholder="Create a temporary password" />
+
+                    <span asp-validation-for="Password"
+                          class="text-danger field-validation-error"></span>
+
+                    <small class="form-help">
+                        Give this password to the staff member.
+                    </small>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn-create-admin">
+                        Create Admin Account
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
