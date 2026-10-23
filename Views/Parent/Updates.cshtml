@@ -1,0 +1,169 @@
+@model SetshabeloAdmissionSystem.ViewModels.UpdatesListViewModel
+
+@{
+    ViewData["Title"] = "School Updates";
+}
+
+<style>
+    .updates-page {
+        min-height: calc(100vh - 60px);
+        padding: 32px 36px;
+        background: #fff;
+        color: #212121;
+    }
+
+    .updates-heading {
+        margin-bottom: 28px;
+    }
+
+        .updates-heading h2 {
+            font-size: 30px;
+            font-weight: 700;
+            color: #171717;
+            margin-bottom: 8px;
+        }
+
+        .updates-heading p {
+            color: #707070;
+            margin-bottom: 0;
+        }
+
+    .updates-list {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .update-card {
+        border: 1px solid #e5eee5;
+        border-radius: 12px;
+        overflow: hidden;
+        background: #fff;
+        box-shadow: 0 3px 12px rgba(0, 0, 0, 0.04);
+        transition: box-shadow 0.2s ease;
+    }
+
+        .update-card:hover {
+            box-shadow: 0 5px 16px rgba(45, 138, 66, 0.09);
+        }
+
+    .update-card-accent {
+        height: 5px;
+        background: #2d8a42;
+    }
+
+    .update-card-body {
+        padding: 24px 28px;
+    }
+
+    .update-card-title {
+        font-size: 21px;
+        font-weight: 700;
+        color: #244d2d;
+        margin-bottom: 14px;
+        overflow-wrap: anywhere;
+    }
+
+    .update-card-content {
+        font-size: 15px;
+        line-height: 1.8;
+        color: #454545;
+        margin-bottom: 20px;
+        white-space: pre-wrap;
+        overflow-wrap: anywhere;
+    }
+
+    .update-card-footer {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding-top: 14px;
+        border-top: 1px solid #eeeeee;
+        color: #707070;
+        font-size: 13px;
+    }
+
+    .update-date-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #2d8a42;
+        flex-shrink: 0;
+    }
+
+    .updates-empty {
+        padding: 48px 24px;
+        border: 1px solid #e5eee5;
+        border-radius: 12px;
+        background: #f8fcf8;
+        text-align: center;
+    }
+
+        .updates-empty h5 {
+            color: #244d2d;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .updates-empty p {
+            color: #707070;
+            margin-bottom: 0;
+        }
+
+    @@media (max-width: 768px) {
+        .updates-page {
+            padding: 24px 16px;
+        }
+
+        .updates-heading h2 {
+            font-size: 25px;
+        }
+
+        .update-card-body {
+            padding: 20px;
+        }
+
+        .update-card-title {
+            font-size: 19px;
+        }
+    }
+</style>
+
+<div class="updates-page">
+
+    <div class="updates-heading">
+        <h2>School Updates</h2>
+        <p>Stay informed about the latest news and announcements from Setshabelo Primary School.</p>
+    </div>
+
+    @if (!Model.Updates.Any())
+    {
+        <div class="updates-empty">
+            <h5>No updates yet</h5>
+            <p>There are currently no school updates available.</p>
+        </div>
+    }
+    else
+    {
+        <div class="updates-list">
+            @foreach (var u in Model.Updates)
+            {
+                <article class="update-card">
+                    <div class="update-card-accent"></div>
+
+                    <div class="update-card-body">
+                        <h3 class="update-card-title">@u.Title</h3>
+
+                        <p class="update-card-content">@u.Content</p>
+
+                        <div class="update-card-footer">
+                            <span class="update-date-dot"></span>
+                            <span>Published: @u.PublishedAt.ToString("f")</span>
+                        </div>
+                    </div>
+                </article>
+            }
+        </div>
+    }
+
+</div>
