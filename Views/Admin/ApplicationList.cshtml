@@ -1,0 +1,413 @@
+@model SetshabeloAdmissionSystem.ViewModels.ApplicationListViewModel
+
+@{
+    ViewData["Title"] = "Applications";
+}
+
+<style>
+    .applications-page {
+        min-height: calc(100vh - 160px);
+        padding: 24px 0 36px;
+        color: #212121;
+    }
+
+    .applications-heading {
+        color: #1b4d3e;
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 8px;
+    }
+
+    .applications-subtitle {
+        color: #6c757d;
+        margin-bottom: 26px;
+    }
+
+    /* Search and filter panel */
+    .applications-filter-panel {
+        background: #f5f9f6;
+        border: 1px solid #e0e9e2;
+        border-radius: 14px;
+        padding: 20px;
+        margin-bottom: 26px;
+    }
+
+        .applications-filter-panel .form-control,
+        .applications-filter-panel .form-select {
+            min-height: 44px;
+            border: 1px solid #cedbd1;
+            border-radius: 8px;
+            background-color: #fff;
+        }
+
+            .applications-filter-panel .form-control:focus,
+            .applications-filter-panel .form-select:focus {
+                border-color: #2d8a42;
+                box-shadow: 0 0 0 3px rgba(45, 138, 66, 0.12);
+            }
+
+            .applications-filter-panel .form-control::placeholder {
+                color: #89958d;
+            }
+
+    .applications-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 42px;
+        padding: 9px 18px;
+        border-radius: 8px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+    }
+
+    .applications-btn-primary {
+        background: #1b4d3e;
+        border: 1px solid #1b4d3e;
+        color: #fff;
+    }
+
+        .applications-btn-primary:hover {
+            background: #143b2f;
+            border-color: #143b2f;
+            color: #fff;
+            transform: translateY(-1px);
+        }
+
+    .applications-btn-view {
+        min-height: 34px;
+        padding: 6px 14px;
+        background: #fff;
+        color: #1b4d3e;
+        border: 1px solid #1b4d3e;
+        border-radius: 7px;
+        font-size: 0.88rem;
+        font-weight: 600;
+        text-decoration: none;
+        white-space: nowrap;
+        transition: background-color 0.2s ease, color 0.2s ease;
+    }
+
+        .applications-btn-view:hover {
+            background: #1b4d3e;
+            color: #fff;
+        }
+
+    /* Table container */
+    .applications-table-card {
+        overflow: hidden;
+        background: #fff;
+        border: 1px solid #e0e9e2;
+        border-radius: 14px;
+        box-shadow: 0 4px 14px rgba(27, 77, 62, 0.07);
+    }
+
+    .applications-table-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        padding: 17px 22px;
+        background: #1b4d3e;
+        color: #fff;
+    }
+
+        .applications-table-header h5 {
+            margin: 0;
+            font-size: 1.05rem;
+            font-weight: 650;
+        }
+
+    .applications-count {
+        display: inline-block;
+        padding: 4px 10px;
+        border-radius: 20px;
+        background: rgba(255, 255, 255, 0.15);
+        color: #fff;
+        font-size: 0.82rem;
+        white-space: nowrap;
+    }
+
+    .applications-table {
+        margin-bottom: 0;
+    }
+
+        .applications-table thead th {
+            padding: 15px 18px;
+            background: #e8f3eb;
+            color: #1b4d3e;
+            border-bottom: 1px solid #d7e6db;
+            font-size: 0.86rem;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .applications-table tbody td {
+            padding: 16px 18px;
+            border-bottom: 1px solid #edf1ee;
+            color: #37423b;
+            vertical-align: middle;
+        }
+
+        .applications-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .applications-table tbody tr:hover td {
+            background: #f7faf8;
+        }
+
+    .application-child-name {
+        color: #1b4d3e;
+        font-weight: 650;
+    }
+
+    .application-parent-name {
+        color: #4f5b53;
+    }
+
+    .application-grade {
+        display: inline-block;
+        padding: 5px 10px;
+        border-radius: 7px;
+        background: #f0f5f1;
+        color: #1b4d3e;
+        font-size: 0.86rem;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+    /* Status badges */
+    .applications-table .badge {
+        display: inline-block;
+        padding: 7px 11px;
+        border-radius: 20px;
+        font-size: 0.78rem;
+        font-weight: 650;
+        white-space: nowrap;
+    }
+
+    .badge-status-Pending {
+        background: #fff0bd;
+        color: #765900;
+    }
+
+    .badge-status-UnderReview {
+        background: #d9f0f3;
+        color: #176773;
+    }
+
+    .badge-status-Accepted {
+        background: #dcefe0;
+        color: #216b32;
+    }
+
+    .badge-status-Rejected {
+        background: #f8dddd;
+        color: #a52834;
+    }
+
+    /* Empty state */
+    .applications-empty {
+        padding: 48px 20px;
+        text-align: center;
+    }
+
+        .applications-empty h5 {
+            margin-bottom: 8px;
+            color: #1b4d3e;
+            font-weight: 700;
+        }
+
+        .applications-empty p {
+            margin-bottom: 0;
+            color: #6c757d;
+        }
+
+    @@media (max-width: 767.98px) {
+        .applications-page {
+            padding: 18px 0 28px;
+        }
+
+        .applications-heading {
+            font-size: 1.65rem;
+        }
+
+        .applications-filter-panel {
+            padding: 15px;
+        }
+
+            .applications-filter-panel form {
+                display: flex;
+                flex-direction: column;
+            }
+
+                .applications-filter-panel form .form-control,
+                .applications-filter-panel form .form-select,
+                .applications-filter-panel form button {
+                    width: 100%;
+                }
+
+        .applications-table-header {
+            padding: 15px;
+        }
+
+        .applications-table thead th,
+        .applications-table tbody td {
+            padding: 13px 14px;
+        }
+    }
+</style>
+
+<div class="applications-page">
+
+    <!-- Page heading -->
+    <div class="mb-4">
+        <h2 class="applications-heading">Applications</h2>
+        <p class="applications-subtitle">
+            Review and manage school admission applications.
+        </p>
+    </div>
+
+    <!-- Search and filter -->
+    <div class="applications-filter-panel">
+        <form method="get" class="d-flex flex-wrap gap-3 align-items-center">
+
+            <div class="flex-grow-1" style="min-width: 220px;">
+                <input type="text"
+                       name="search"
+                       value="@Model.SearchTerm"
+                       class="form-control"
+                       placeholder="Search child or parent..."
+                       aria-label="Search child or parent" />
+            </div>
+
+            <div style="min-width: 180px;">
+                <select name="status"
+                        class="form-select"
+                        aria-label="Filter by application status">
+                    <option value="">All Statuses</option>
+                    <option value="Pending"
+                            selected="@(Model.StatusFilter == "Pending")">
+                        Pending
+                    </option>
+                    <option value="Under Review"
+                            selected="@(Model.StatusFilter == "Under Review")">
+                        Under Review
+                    </option>
+                    <option value="Accepted"
+                            selected="@(Model.StatusFilter == "Accepted")">
+                        Accepted
+                    </option>
+                    <option value="Rejected"
+                            selected="@(Model.StatusFilter == "Rejected")">
+                        Rejected
+                    </option>
+                </select>
+            </div>
+
+            <button type="submit"
+                    class="applications-btn applications-btn-primary">
+                Filter Applications
+            </button>
+
+        </form>
+    </div>
+
+    @if (Model.Applications == null || !Model.Applications.Any())
+    {
+        <div class="applications-table-card">
+            <div class="applications-empty">
+                <h5>No applications found</h5>
+                <p>
+                    Try changing your search term or selecting a different status.
+                </p>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="applications-table-card">
+
+            <div class="applications-table-header">
+                <h5>Admission Applications</h5>
+
+                <span class="applications-count">
+                    @Model.Applications.Count()
+                    @(Model.Applications.Count() == 1
+                                    ? "application"
+                                    : "applications")
+            </span>
+        </div>
+
+            <div class="table-responsive">
+                <table class="table table-hover align-middle applications-table">
+                    <thead>
+                        <tr>
+                            <th>Child</th>
+                            <th>Parent</th>
+                            <th>Grade</th>
+                            <th>Submitted</th>
+                            <th>Status</th>
+                            <th class="text-end">Action</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                    @foreach (var app in Model.Applications)
+                        {
+                            var badgeClass = (app.ApplicationStatus ?? "")
+                            .Replace(" ", "") switch
+                            {
+                                "Pending" => "badge-status-Pending",
+                                "UnderReview" => "badge-status-UnderReview",
+                                "Accepted" => "badge-status-Accepted",
+                                "Rejected" => "badge-status-Rejected",
+                                _ => "bg-secondary"
+                            };
+
+                            <tr>
+                                <td>
+                                    <span class="application-child-name">
+                                        @app.ChildFullName
+                                    </span>
+                                </td>
+
+                                <td>
+                                    <span class="application-parent-name">
+                                        @app.ParentFirstName @app.ParentLastName
+                                    </span>
+                                </td>
+
+                                <td>
+                                    <span class="application-grade">
+                                        @app.GradeApplyingFor
+                                    </span>
+                                </td>
+
+                                <td class="text-nowrap">
+                                    @app.SubmissionDate.ToShortDateString()
+                                </td>
+
+                                <td>
+                                    <span class="badge @badgeClass">
+                                        @app.ApplicationStatus
+                                    </span>
+                                </td>
+
+                                <td class="text-end">
+                                    <a asp-action="ApplicationDetail"
+                                       asp-route-id="@app.ApplicationId"
+                                       class="applications-btn-view">
+                                        View
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+</div>
