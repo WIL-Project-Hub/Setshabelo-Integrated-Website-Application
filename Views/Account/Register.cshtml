@@ -1,0 +1,483 @@
+@model SetshabeloAdmissionSystem.ViewModels.RegisterViewModel
+
+@{
+    ViewData["Title"] = "Create Account";
+}
+
+<style>
+    .register-page,
+    .register-page * {
+        box-sizing: border-box;
+    }
+
+    .register-page {
+        display: flex;
+        width: 100%;
+        height: 100%;
+        min-height: 0;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        font-family: Arial, sans-serif;
+        background: #fff;
+    }
+
+    /* Left green panel */
+    .register-left {
+        width: 40%;
+        height: 100%;
+        flex-shrink: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 30px;
+        overflow: hidden;
+        text-align: center;
+        color: #fff;
+        background: #2d8b3e;
+    }
+
+    .school-logo {
+        width: 280px;
+        height: 280px;
+        max-width: 80%;
+        flex-shrink: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        margin-bottom: 55px;
+        border-radius: 50%;
+        background: #fff;
+    }
+
+        .school-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+    .register-left h2 {
+        margin: 0 0 4px;
+        font-size: 29px;
+        font-weight: 600;
+    }
+
+    .register-description {
+        margin: 0 0 42px;
+        font-size: 20px;
+        line-height: 1.25;
+    }
+
+    .register-benefits {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        text-align: left;
+        font-size: 20px;
+        line-height: 1.35;
+    }
+
+        .register-benefits li::before {
+            content: "✓";
+            margin-right: 14px;
+        }
+
+    /* Right panel */
+    .register-right {
+        position: relative;
+        flex: 1;
+        min-width: 0;
+        min-height: 0;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        overflow: hidden;
+        background: #fff;
+    }
+
+    /* Faded school logo */
+    .register-watermark {
+        position: absolute;
+        width: min(90%, 800px);
+        max-height: 100%;
+        object-fit: contain;
+        opacity: 0.09;
+        pointer-events: none;
+    }
+
+    /* Registration card */
+    .register-card {
+        position: relative;
+        z-index: 1;
+        width: 100%;
+        max-width: 400px;
+        max-height: 100%;
+        padding: 28px 40px 22px;
+        overflow-y: auto;
+        border: 1px solid #e7e7e7;
+        border-radius: 17px;
+        background: rgba(255, 255, 255, 0.88);
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.12);
+    }
+
+        .register-card h3 {
+            margin: 0 0 22px;
+            color: #080808;
+            font-size: 24px;
+            font-weight: 700;
+            text-align: center;
+        }
+
+        .register-card .form-label {
+            display: block;
+            margin-bottom: 5px;
+            color: #111;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .register-card .form-control {
+            height: 44px;
+            border: none;
+            border-radius: 8px;
+            background: #d9d9d9;
+            box-shadow: none;
+        }
+
+            .register-card .form-control:focus {
+                background: #eee;
+                outline: 2px solid #2d8b3e;
+            }
+
+        .register-card .row {
+            --bs-gutter-x: 12px;
+            --bs-gutter-y: 10px;
+        }
+
+        .register-card .field-group {
+            margin-bottom: 12px;
+        }
+
+        .register-card .btn-success {
+            height: 48px;
+            margin-top: 8px;
+            border-color: #2d8b3e;
+            border-radius: 8px;
+            background: #2d8b3e;
+            font-weight: 600;
+        }
+
+            .register-card .btn-success:hover {
+                border-color: #247433;
+                background: #247433;
+            }
+
+        .register-card .login-text {
+            margin: 16px 0 0;
+            color: #111;
+            font-size: 13px;
+            text-align: center;
+        }
+
+            .register-card .login-text a {
+                margin-left: 4px;
+                color: #111;
+                text-decoration: none;
+            }
+
+                .register-card .login-text a:hover {
+                    color: #2d8b3e;
+                    text-decoration: underline;
+                }
+
+    /* Tablets and smaller desktop screens */
+    @@media (max-width: 900px) {
+        .register-left {
+            width: 38%;
+            padding: 20px 15px;
+        }
+
+        .school-logo {
+            width: 190px;
+            height: 190px;
+            margin-bottom: 30px;
+        }
+
+        .register-left h2 {
+            font-size: 23px;
+        }
+
+        .register-description,
+        .register-benefits {
+            font-size: 16px;
+        }
+
+        .register-description {
+            margin-bottom: 25px;
+        }
+
+        .register-right {
+            padding: 12px;
+        }
+
+        .register-card {
+            padding: 22px;
+        }
+    }
+
+    /* Mobile screens */
+    @@media (max-width: 650px) {
+        .register-page {
+            flex-direction: column;
+        }
+
+        .register-left {
+            width: 100%;
+            height: 32%;
+            flex: 0 0 32%;
+            padding: 8px 16px;
+        }
+
+        .school-logo {
+            width: 70px;
+            height: 70px;
+            margin-bottom: 6px;
+        }
+
+        .register-left h2 {
+            font-size: 19px;
+        }
+
+        .register-description {
+            margin-bottom: 6px;
+            font-size: 13px;
+            line-height: 1.2;
+        }
+
+        .register-benefits {
+            font-size: 12px;
+            line-height: 1.2;
+        }
+
+            .register-benefits li::before {
+                margin-right: 6px;
+            }
+
+        .register-right {
+            flex: 1 1 0;
+            width: 100%;
+            min-height: 0;
+            padding: 8px 12px;
+        }
+
+        .register-card {
+            max-width: 400px;
+            padding: 14px 20px;
+        }
+
+            .register-card h3 {
+                margin-bottom: 12px;
+                font-size: 21px;
+            }
+
+            .register-card .form-control {
+                height: 34px;
+            }
+
+            .register-card .field-group {
+                margin-bottom: 8px;
+            }
+
+            .register-card .row {
+                --bs-gutter-y: 6px;
+            }
+
+            .register-card .btn-success {
+                height: 40px;
+            }
+
+            .register-card .login-text {
+                margin-top: 10px;
+            }
+    }
+
+    /* Short desktop screens */
+    @@media (max-height: 750px) and (min-width: 651px) {
+        .school-logo {
+            width: 150px;
+            height: 150px;
+            margin-bottom: 15px;
+        }
+
+        .register-left {
+            padding: 12px 20px;
+        }
+
+            .register-left h2 {
+                font-size: 23px;
+            }
+
+        .register-description {
+            margin-bottom: 16px;
+            font-size: 16px;
+        }
+
+        .register-benefits {
+            font-size: 15px;
+        }
+
+        .register-card {
+            padding: 16px 30px;
+        }
+
+            .register-card h3 {
+                margin-bottom: 12px;
+            }
+
+            .register-card .form-control {
+                height: 36px;
+            }
+
+            .register-card .field-group {
+                margin-bottom: 7px;
+            }
+
+            .register-card .btn-success {
+                height: 42px;
+            }
+
+            .register-card .login-text {
+                margin-top: 10px;
+            }
+    }
+</style>
+
+<div class="register-page">
+
+    <section class="register-left">
+
+        <div class="school-logo">
+            <img src="~/images/school-logo.png"
+                 alt="Setshabelo Public School logo" />
+        </div>
+
+        <h2>Setshabelo Admission System</h2>
+
+        <p class="register-description">
+            The place where everything connects.<br />
+            Making it easy for you and your child.
+        </p>
+
+        <ul class="register-benefits">
+            <li>Apply for admission online</li>
+            <li>Track your application status</li>
+            <li>Upload documents securely</li>
+            <li>Get updates every step of the way</li>
+        </ul>
+
+    </section>
+
+    <section class="register-right">
+
+        <img src="~/images/school-logo.png"
+             class="register-watermark"
+             alt=""
+             aria-hidden="true" />
+
+        <div class="register-card">
+
+            <h3>Create your account</h3>
+
+            <form asp-action="Register" method="post">
+
+                <div asp-validation-summary="ModelOnly"
+                     class="text-danger mb-2"></div>
+
+                <div class="row mb-2">
+
+                    <div class="col-md-6 field-group">
+                        <label asp-for="FirstName"
+                               class="form-label"></label>
+
+                        <input asp-for="FirstName"
+                               class="form-control" />
+
+                        <span asp-validation-for="FirstName"
+                              class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-6 field-group">
+                        <label asp-for="LastName"
+                               class="form-label"></label>
+
+                        <input asp-for="LastName"
+                               class="form-control" />
+
+                        <span asp-validation-for="LastName"
+                              class="text-danger"></span>
+                    </div>
+
+                </div>
+
+                <div class="field-group">
+                    <label asp-for="Email"
+                           class="form-label"></label>
+
+                    <input asp-for="Email"
+                           type="email"
+                           class="form-control" />
+
+                    <span asp-validation-for="Email"
+                          class="text-danger"></span>
+                </div>
+
+                <div class="field-group">
+                    <label asp-for="Password"
+                           class="form-label"></label>
+
+                    <input asp-for="Password"
+                           type="password"
+                           class="form-control" />
+
+                    <span asp-validation-for="Password"
+                          class="text-danger"></span>
+                </div>
+
+                <div class="field-group">
+                    <label asp-for="ConfirmPassword"
+                           class="form-label"></label>
+
+                    <input asp-for="ConfirmPassword"
+                           type="password"
+                           class="form-control" />
+
+                    <span asp-validation-for="ConfirmPassword"
+                          class="text-danger"></span>
+                </div>
+
+                <button type="submit"
+                        class="btn btn-success w-100">
+                    Create Account
+                </button>
+
+            </form>
+
+            <p class="login-text">
+                Already have an account?
+                <a asp-action="Login">Log in here</a>
+            </p>
+
+        </div>
+
+    </section>
+
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+```
