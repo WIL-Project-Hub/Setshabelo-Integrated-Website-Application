@@ -1,0 +1,195 @@
+@model SetshabeloAdmissionSystem.ViewModels.PublishUpdateViewModel
+
+@{
+    ViewData["Title"] = "Publish Update";
+}
+
+<style>
+    .publish-update-page {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .page-heading {
+        color: #1b4d3e;
+        font-weight: 700;
+    }
+
+    .page-subtitle {
+        color: #6c7b73;
+        margin-bottom: 25px;
+    }
+
+    .update-form-card {
+        background: white;
+        border: none;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 5px 18px rgba(27, 77, 62, 0.12);
+    }
+
+    .form-card-header {
+        background: linear-gradient(135deg, #1b4d3e, #28745a);
+        color: white;
+        padding: 22px 28px;
+    }
+
+        .form-card-header h4 {
+            margin: 0;
+            font-weight: 700;
+        }
+
+    .form-card-body {
+        padding: 28px;
+    }
+
+    .form-label {
+        color: #1b4d3e;
+        font-weight: 600;
+        margin-bottom: 8px;
+    }
+
+    .form-control {
+        border: 1px solid #cedbd2;
+        border-radius: 8px;
+        padding: 11px 13px;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+        .form-control:focus {
+            border-color: #28745a;
+            box-shadow: 0 0 0 0.2rem rgba(40, 116, 90, 0.15);
+        }
+
+    textarea.form-control {
+        min-height: 160px;
+        resize: vertical;
+    }
+
+    .validation-summary-errors {
+        background: #fff1f1;
+        border: 1px solid #f0caca;
+        color: #b42332;
+        border-radius: 8px;
+        padding: 12px 16px;
+        margin-bottom: 20px;
+    }
+
+        .validation-summary-errors ul {
+            margin-bottom: 0;
+            padding-left: 20px;
+        }
+
+    .field-validation-error {
+        display: block;
+        font-size: 0.875rem;
+        margin-top: 5px;
+    }
+
+    .form-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 25px;
+        padding-top: 20px;
+        border-top: 1px solid #e4ece6;
+    }
+
+    .btn-publish {
+        background: #1b4d3e;
+        color: white;
+        border: 1px solid #1b4d3e;
+        border-radius: 8px;
+        padding: 10px 22px;
+        font-weight: 600;
+        transition: all 0.2s ease;
+    }
+
+        .btn-publish:hover {
+            background: #14392e;
+            border-color: #14392e;
+            color: white;
+        }
+
+    .btn-cancel {
+        background: white;
+        color: #1b4d3e;
+        border: 1px solid #1b4d3e;
+        border-radius: 8px;
+        padding: 10px 22px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.2s ease;
+    }
+
+        .btn-cancel:hover {
+            background: #eaf2ec;
+            color: #14392e;
+        }
+
+    @@media (max-width: 576px) {
+        .form-card-header,
+        .form-card-body {
+            padding: 20px;
+        }
+
+        .form-actions {
+            flex-direction: column;
+        }
+
+        .btn-publish,
+        .btn-cancel {
+            width: 100%;
+            text-align: center;
+        }
+    }
+</style>
+
+<div class="publish-update-page">
+    <h2 class="page-heading">Publish School Update</h2>
+    <p class="page-subtitle">
+        Share important school news and announcements.
+    </p>
+
+    <div class="update-form-card">
+        <div class="form-card-header">
+            <h4>Update Information</h4>
+        </div>
+
+        <div class="form-card-body">
+            <form asp-action="PublishUpdate" method="post">
+                <div asp-validation-summary="ModelOnly"
+                     class="text-danger"></div>
+
+                <div class="mb-4">
+                    <label asp-for="Title" class="form-label"></label>
+                    <input asp-for="Title"
+                           class="form-control"
+                           placeholder="Enter update title" />
+                    <span asp-validation-for="Title"
+                          class="text-danger field-validation-error"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Content" class="form-label"></label>
+                    <textarea asp-for="Content"
+                              class="form-control"
+                              rows="6"
+                              placeholder="Write your school update here..."></textarea>
+                    <span asp-validation-for="Content"
+                          class="text-danger field-validation-error"></span>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn-publish">
+                        Publish Update
+                    </button>
+
+                    <a asp-action="ManageContent" class="btn-cancel">
+                        Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
